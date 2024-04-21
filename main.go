@@ -28,5 +28,5 @@ func main() {
 	r.PUT("/user", userHandler.UpdateUser)
 	r.DELETE("/user/:id", userHandler.DeleteUser)
 
-	_ = r.Run(cfg.Server.Address + ": " + strconv.Itoa(cfg.Server.Port))
+	_ = r.Run(cfg.Server.Address + ": " + strconv.Itoa(cfg.Server.Port)) //test commit
 }
