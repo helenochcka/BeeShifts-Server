@@ -1,0 +1,4 @@
+server:
+  address: localhost
+  port: 8080
+  secret_key: "a79c73a0-9ca5-4a16-afef-296497aff250"

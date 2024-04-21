@@ -1,0 +1,48 @@
+### Get all users
+GET {{host}}/user
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDkwNzU1NDUsImlkIjo5LCJyb2xlIjoiU3R1ZGVudCJ9.eVTb-gaAiU_YutZGOO2PdhQGWyO6FMCMpmY4GNaBsy4
+
+### Get user by ID
+GET {{host}}/user/8
+Content-Type: application/json
+
+### Create user
+POST {{host}}/user
+Content-Type: application/json
+
+{
+  "first_name": "Helen",
+  "last_name": "Osa",
+  "organization": "Bonch",
+  "position": "Student",
+  "email": "helenochcka@mail.ru",
+  "password": "helenochcka11"
+}
+
+### Update user
+PUT {{host}}/user
+Content-Type: application/json
+
+{
+  "id": 8,
+  "first_name": "Pop",
+  "last_name": "Pop",
+  "organization": "Tik",
+  "position": "Tik",
+  "email": "pop@mail.ru",
+  "password": "123"
+}
+
+### Delete user by ID
+DELETE {{host}}/user/6
+Content-Type: application/json
+
+### User auth
+POST {{host}}/login
+Content-Type: application/json
+
+{
+  "email": "helenochcka@mail.ru",
+  "password": "helenochcka11"
+}
