@@ -11,7 +11,7 @@ import (
 
 func main() {
 	cfg := config.LoadYamlConfig("config.yaml")
-	_ = repositories.ConnectDatabase()
+	_ = repositories.ConnectDatabase(cfg.DB.Host, cfg.DB.Port, cfg.DB.Username, cfg.DB.Password, cfg.DB.DBName)
 	r := gin.Default()
 
 	userRepository := repositories.NewUserRepository()
@@ -23,10 +23,10 @@ func main() {
 
 	r.POST("/login", authHandler.Login)
 	r.POST("/user", userHandler.CreateUser)
-	r.GET("/user", authHandler.AUthUser, userHandler.GetAllUsers)
+	r.GET("/user", authHandler.AuthUser, userHandler.GetAllUsers)
 	r.GET("/user/:id", userHandler.GetUserById)
 	r.PUT("/user", userHandler.UpdateUser)
 	r.DELETE("/user/:id", userHandler.DeleteUser)
 
-	_ = r.Run(cfg.Server.Address + ": " + strconv.Itoa(cfg.Server.Port)) //test commit
+	_ = r.Run(cfg.Server.Address + ": " + strconv.Itoa(cfg.Server.Port))
 }

@@ -9,11 +9,10 @@ type AuthService struct {
 	SecretKey string
 }
 
-func (as *AuthService) GenerateToken(userId int, userRole string) (string, error) {
+func (as *AuthService) GenerateToken(userId int) (string, error) {
 	payload := jwt.MapClaims{
-		"id":   userId,
-		"role": userRole,
-		"exp":  time.Now().Add(time.Minute * 15).Unix(),
+		"id":  userId,
+		"exp": time.Now().Add(time.Minute * 15).Unix(),
 	}
 
 	token, err := (jwt.NewWithClaims(jwt.SigningMethodHS256, payload)).SignedString([]byte(as.SecretKey))

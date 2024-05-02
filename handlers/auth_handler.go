@@ -43,7 +43,7 @@ func (ah *AuthHandler) Login(c *gin.Context) {
 		return
 	}
 
-	token, err := ah.authService.GenerateToken(user.Id, user.Position)
+	token, err := ah.authService.GenerateToken(user.Id)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -53,7 +53,7 @@ func (ah *AuthHandler) Login(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": LoginResponse{AccessToken: token}})
 }
 
-func (ah *AuthHandler) AUthUser(c *gin.Context) {
+func (ah *AuthHandler) AuthUser(c *gin.Context) {
 	payload, err := ah.authService.PayloadFromToken(c.GetHeader("Authorization"))
 
 	if err != nil {

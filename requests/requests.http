@@ -1,10 +1,10 @@
 ### Get all users
 GET {{host}}/user
 Content-Type: application/json
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDkwNzU1NDUsImlkIjo5LCJyb2xlIjoiU3R1ZGVudCJ9.eVTb-gaAiU_YutZGOO2PdhQGWyO6FMCMpmY4GNaBsy4
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTQ2ODQ4MjMsImlkIjoxLCJyb2xlIjoxfQ.pNcnPg3MCDXfB1f4NxzWXaYfnyi2MllLCc7XioZhqJ8
 
 ### Get user by ID
-GET {{host}}/user/8
+GET {{host}}/user/9
 Content-Type: application/json
 
 ### Create user
@@ -12,12 +12,12 @@ POST {{host}}/user
 Content-Type: application/json
 
 {
-  "first_name": "Helen",
-  "last_name": "Osa",
-  "organization": "Bonch",
-  "position": "Student",
-  "email": "helenochcka@mail.ru",
-  "password": "helenochcka11"
+  "first_name": "Test",
+  "last_name": "Test",
+  "organization": 1,
+  "position": 2,
+  "email": "test@mail.ru",
+  "password": "111"
 }
 
 ### Update user
@@ -25,17 +25,17 @@ PUT {{host}}/user
 Content-Type: application/json
 
 {
-  "id": 8,
+  "id": 9,
   "first_name": "Pop",
   "last_name": "Pop",
-  "organization": "Tik",
-  "position": "Tik",
+  "organization": 1,
+  "position": 2,
   "email": "pop@mail.ru",
   "password": "123"
 }
 
 ### Delete user by ID
-DELETE {{host}}/user/6
+DELETE {{host}}/user/10
 Content-Type: application/json
 
 ### User auth
@@ -43,6 +43,6 @@ POST {{host}}/login
 Content-Type: application/json
 
 {
-  "email": "helenochcka@mail.ru",
-  "password": "helenochcka11"
+  "email": "helen@mail.ru",
+  "password": "helen11"
 }
