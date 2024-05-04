@@ -11,7 +11,7 @@ import (
 
 func main() {
 	cfg := config.LoadYamlConfig("config.yaml")
-	_ = repositories.ConnectDatabase(cfg.DB.Host, cfg.DB.Port, cfg.DB.Username, cfg.DB.Password, cfg.DB.DBName)
+	_ = repositories.ConnectDatabase(cfg.DB.Host, cfg.DB.Port, cfg.DB.UserName, cfg.DB.Password, cfg.DB.DBName)
 	r := gin.Default()
 
 	userRepository := repositories.NewUserRepository()

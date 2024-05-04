@@ -4,7 +4,7 @@ server:
   secret_key: a79c73a0-9ca5-4a16-afef-296497aff250
 
 db:
-  host: localhost
+  host: 45.153.230.86
   port: 5432
   user_name: postgres
   password: admin
