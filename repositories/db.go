@@ -15,7 +15,7 @@ func ConnectDatabase(host string, port int, user string, password string, dbname
 
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
-		return err
+		return ConnErr
 	}
 
 	DB = db
