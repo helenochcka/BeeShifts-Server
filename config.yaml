@@ -6,6 +6,6 @@ server:
 db:
   host: 45.153.230.86
   port: 5432
-  user_name: postgres
-  password: admin
+  user_name: bee
+  password: OZ15Hv1qVj2E
   dbname: store
