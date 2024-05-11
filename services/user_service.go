@@ -22,13 +22,36 @@ func (us *UserService) CreateUser(user models.User) (*models.User, error) {
 }
 
 func (us *UserService) GetUsers() ([]models.User, error) {
-	users, err := us.userRepository.GetAll()
+	users, err := us.userRepository.Get(repositories.UserFilter{})
+
+	//filter := repositories.UserFilter{FirstNames: []interface{}{"Kirill"}, LastNames: []interface{}{"Ponam"}}
+	//
+	//users, err := userRepository.GetMany(filter)
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+	//
+	//for _, user := range users {
+	//	fmt.Printf("ID: %d, Organization: %d, Position: %d, Name: %s %s\n", user.Id, user.Organization, user.Position, user.FirstName, user.LastName)
+	//}
 
 	return users, err
 }
 
-func (us *UserService) GetUserByID(id int) (*models.User, error) {
-	user, err := us.userRepository.GetByID(id)
+func (us *UserService) GetUsersByPosition(position_id int) ([]models.User, error) {
+	users, err := us.userRepository.Get(repositories.UserFilter{})
+
+	return users, err
+}
+
+func (us *UserService) GetUsersByOrganization(organization_id int) ([]models.User, error) {
+	users, err := us.userRepository.Get(repositories.UserFilter{})
+
+	return users, err
+}
+
+func (us *UserService) GetUserByID(id int) ([]models.User, error) {
+	user, err := us.userRepository.Get(repositories.UserFilter{})
 
 	if errors.Is(err, repositories.RecNotFound) {
 		return nil, UserNotFound
@@ -37,8 +60,8 @@ func (us *UserService) GetUserByID(id int) (*models.User, error) {
 	return user, err
 }
 
-func (us *UserService) GetUserByEmail(email string) (*models.User, error) {
-	user, err := us.userRepository.GetByEmail(email)
+func (us *UserService) GetUserByEmail(email string) ([]models.User, error) {
+	user, err := us.userRepository.Get(repositories.UserFilter{})
 
 	if errors.Is(err, repositories.RecNotFound) {
 		return nil, UserNotFound
@@ -53,12 +76,12 @@ func (us *UserService) UpdateUser(user models.User) (*models.User, error) {
 	return updUser, err
 }
 
-func (us *UserService) DeleteUser(id int) (*models.User, error) {
-	delUser, err := us.userRepository.Delete(id)
+func (us *UserService) DeleteUser(id int) error {
+	err := us.userRepository.Delete(id)
 
 	if errors.Is(err, repositories.RecNotFound) {
-		return nil, UserNotFound
+		return UserNotFound
 	}
 
-	return delUser, err
+	return err
 }
