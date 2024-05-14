@@ -1,24 +1,28 @@
 ### Get all users
-GET {{host}}/user
+GET {{host}}/users
 Content-Type: application/json
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTQ2ODQ4MjMsImlkIjoxLCJyb2xlIjoxfQ.pNcnPg3MCDXfB1f4NxzWXaYfnyi2MllLCc7XioZhqJ8
 
-### Get user by ID
-GET {{host}}/user/9
+### Get users by filters
+GET {{host}}/users?id="7"
+Content-Type: application/json
+
+### Get me
+GET {{host}}/users/me
 Content-Type: application/json
 
 ### Create user
-POST {{host}}/user
+POST {{host}}/users
 Content-Type: application/json
 
 {
+  "role": 1,
   "first_name": "Test",
   "last_name": "Test",
-  "organization": 1,
-  "position": 2,
   "email": "test@mail.ru",
   "password": "111"
 }
+
+
 
 ### Update user
 PUT {{host}}/user

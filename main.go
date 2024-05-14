@@ -2,42 +2,40 @@ package main
 
 import (
 	"BeeShifts-Server/config"
+	"BeeShifts-Server/handlers"
 	"BeeShifts-Server/repositories"
-	"fmt"
+	"BeeShifts-Server/services"
+	"BeeShifts-Server/use_cases"
+	"github.com/gin-gonic/gin"
 	_ "github.com/gin-gonic/gin"
-	"log"
+	"strconv"
 )
 
 func main() {
 	cfg := config.LoadYamlConfig("config.yaml")
 	_ = repositories.ConnectDatabase(cfg.DB.Host, cfg.DB.Port, cfg.DB.UserName, cfg.DB.Password, cfg.DB.DBName)
-	//r := gin.Default()
+	r := gin.Default()
 
-	userRepository := repositories.NewUserRepository()
+	userRepository := repositories.NewUserRepoPgSQL()
+	organizationRepository := repositories.NewOrganizationRepo()
+	positionRepository := repositories.NewPositionRepo()
 
-	filter := repositories.UserFilter{FirstNames: []interface{}{"Kirill"}, LastNames: []interface{}{"Osa"}}
+	userService := services.NewUserService(userRepository, organizationRepository, positionRepository)
+	getUsersUseCase := use_cases.NewGetUserUseCase(userService)
+	createUserUseCase := use_cases.NewCreateUserUseCase(userService)
+	userHandler := handlers.NewUserHandler(getUsersUseCase, createUserUseCase)
 
-	users, err := userRepository.Get(filter)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	for _, user := range users {
-		fmt.Printf("ID: %d, Organization: %d, Position: %d, Name: %s %s\n", user.Id, user.Organization, user.Position, user.FirstName, user.LastName)
-	}
-
-	//userService := services.NewUserService(userRepository)
-	//userHandler := handlers.NewUserHandler(userService)
-	//
 	//authService := services.AuthService{SecretKey: cfg.Server.SecretKey}
 	//authHandler := handlers.NewAuthHandler(userService, authService)
-	//
+
+	r.GET("/users", userHandler.GetUsers)
+	r.POST("/users", userHandler.CreateUser)
+
 	//r.POST("/login", authHandler.Login)
-	//r.POST("/user", userHandler.CreateUser)
 	//r.GET("/user", authHandler.AuthUser, userHandler.GetAllUsers)
 	//r.GET("/user/:id", userHandler.GetUserById)
 	//r.PUT("/user", userHandler.UpdateUser)
 	//r.DELETE("/user/:id", userHandler.DeleteUser)
 	//
-	//_ = r.Run(cfg.Server.Address + ": " + strconv.Itoa(cfg.Server.Port))
+	_ = r.Run(cfg.Server.Address + ": " + strconv.Itoa(cfg.Server.Port))
 }
