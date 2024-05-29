@@ -2,7 +2,7 @@ package repositories
 
 import (
 	"BeeShifts-Server/dtos"
-	"BeeShifts-Server/repositories/models"
+	"BeeShifts-Server/entities"
 	"database/sql"
 	_ "database/sql"
 	"fmt"
@@ -10,10 +10,10 @@ import (
 )
 
 type UserRepo interface {
-	GetAll(filter dtos.UsersFilterDTO) ([]models.User, error)
-	GetOne(filter dtos.UsersFilterDTO) (*models.User, error)
-	Insert(user models.User) (*models.User, error)
-	Update(user models.User) (*models.User, error)
+	GetAll(filter dtos.UsersFilterDTO) ([]entities.UserEntity, error)
+	GetOne(filter dtos.UsersFilterDTO) (*entities.UserEntity, error)
+	Insert(user entities.UserEntity) (*entities.UserEntity, error)
+	Update(user entities.UserEntity) (*entities.UserEntity, error)
 }
 type UserRepoPgSQL struct {
 }
@@ -22,7 +22,7 @@ func NewUserRepoPgSQL() UserRepo {
 	return &UserRepoPgSQL{}
 }
 
-func (ur *UserRepoPgSQL) GetAll(filter dtos.UsersFilterDTO) ([]models.User, error) {
+func (ur *UserRepoPgSQL) GetAll(filter dtos.UsersFilterDTO) ([]entities.UserEntity, error) {
 	queryBase := "SELECT id, organization_id, position_id, role, first_name, last_name, email, password FROM users"
 
 	conditions, args := ur.buildQueryParams(filter)
@@ -38,9 +38,9 @@ func (ur *UserRepoPgSQL) GetAll(filter dtos.UsersFilterDTO) ([]models.User, erro
 	}
 	defer rows.Close()
 
-	var users []models.User
+	var users []entities.UserEntity
 	for rows.Next() {
-		var user models.User
+		var user entities.UserEntity
 		var organizationId sql.NullInt64
 		var positionId sql.NullInt64
 		if err := rows.Scan(&user.Id, &organizationId, &positionId, &user.Role, &user.FirstName, &user.LastName, &user.Email, &user.Password); err != nil {
@@ -64,7 +64,7 @@ func (ur *UserRepoPgSQL) GetAll(filter dtos.UsersFilterDTO) ([]models.User, erro
 	return users, nil
 }
 
-func (ur *UserRepoPgSQL) GetOne(filter dtos.UsersFilterDTO) (*models.User, error) {
+func (ur *UserRepoPgSQL) GetOne(filter dtos.UsersFilterDTO) (*entities.UserEntity, error) {
 	queryBase := "SELECT id, organization_id, position_id, role, first_name, last_name, email, password FROM users"
 
 	conditions, args := ur.buildQueryParams(filter)
@@ -80,7 +80,7 @@ func (ur *UserRepoPgSQL) GetOne(filter dtos.UsersFilterDTO) (*models.User, error
 	}
 	defer rows.Close()
 
-	var user models.User
+	var user entities.UserEntity
 	var organizationId sql.NullInt64
 	var positionId sql.NullInt64
 	if rows.Next() {
@@ -111,7 +111,7 @@ func (ur *UserRepoPgSQL) GetOne(filter dtos.UsersFilterDTO) (*models.User, error
 	return &user, nil
 }
 
-func (ur *UserRepoPgSQL) Insert(user models.User) (*models.User, error) {
+func (ur *UserRepoPgSQL) Insert(user entities.UserEntity) (*entities.UserEntity, error) {
 	var userId int
 
 	stmt := "insert into users (organization_id, position_id, role, first_name, last_name, email, password) values ($1, $2, $3, $4, $5, $6, $7) returning id"
@@ -128,7 +128,7 @@ func (ur *UserRepoPgSQL) Insert(user models.User) (*models.User, error) {
 	return insertedUser, nil
 }
 
-func (ur *UserRepoPgSQL) Update(user models.User) (*models.User, error) {
+func (ur *UserRepoPgSQL) Update(user entities.UserEntity) (*entities.UserEntity, error) {
 
 	stmt := "update users set organization_id=$1, position_id=$2, role=$3, first_name=$4, last_name=$5,  email=$6, password=$7 where id = $8"
 	_, err := DB.Exec(stmt, user.OrganizationId, user.PositionId, user.Role, user.FirstName, user.LastName, user.Email, user.Password, user.Id)

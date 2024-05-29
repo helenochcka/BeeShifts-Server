@@ -2,19 +2,26 @@ package repositories
 
 import (
 	"BeeShifts-Server/dtos"
-	"BeeShifts-Server/repositories/models"
+	"BeeShifts-Server/entities"
 	"fmt"
 	"strings"
 )
 
-type PositionRepo struct {
+type PositionRepo interface {
+	GetAll(filter dtos.PositionsFilterDTO) ([]entities.PositionEntity, error)
+	GetOne(filter dtos.PositionsFilterDTO) (*entities.PositionEntity, error)
+	Insert(position entities.PositionEntity) (*entities.PositionEntity, error)
+	Update(position entities.PositionEntity) (*entities.PositionEntity, error)
 }
 
-func NewPositionRepo() PositionRepo {
-	return PositionRepo{}
+type PositionRepoPgSQL struct {
 }
 
-func (pr *PositionRepo) GetAll(filter dtos.GetPositionsDTO) ([]models.Position, error) {
+func NewPositionRepoPgSQL() PositionRepo {
+	return &PositionRepoPgSQL{}
+}
+
+func (pr *PositionRepoPgSQL) GetAll(filter dtos.PositionsFilterDTO) ([]entities.PositionEntity, error) {
 	queryBase := "SELECT id, manager_id, name FROM positions"
 
 	conditions, args := pr.buildQueryParams(filter)
@@ -30,10 +37,10 @@ func (pr *PositionRepo) GetAll(filter dtos.GetPositionsDTO) ([]models.Position, 
 	}
 	defer rows.Close()
 
-	var positions []models.Position
+	var positions []entities.PositionEntity
 	for rows.Next() {
-		var position models.Position
-		if err := rows.Scan(&position.Id, &position.ManagerID, &position.Name); err != nil {
+		var position entities.PositionEntity
+		if err := rows.Scan(&position.Id, &position.ManagerId, &position.Name); err != nil {
 			return nil, err
 		}
 		positions = append(positions, position)
@@ -42,7 +49,7 @@ func (pr *PositionRepo) GetAll(filter dtos.GetPositionsDTO) ([]models.Position, 
 	return positions, nil
 }
 
-func (pr *PositionRepo) GetOne(filter dtos.GetPositionsDTO) (*models.Position, error) {
+func (pr *PositionRepoPgSQL) GetOne(filter dtos.PositionsFilterDTO) (*entities.PositionEntity, error) {
 	queryBase := "SELECT id, manager_id, name FROM positions"
 
 	conditions, args := pr.buildQueryParams(filter)
@@ -57,9 +64,9 @@ func (pr *PositionRepo) GetOne(filter dtos.GetPositionsDTO) (*models.Position, e
 		return nil, err
 	}
 
-	var position models.Position
+	var position entities.PositionEntity
 	if rows.Next() {
-		if err := rows.Scan(&position.Id, &position.ManagerID, &position.Name); err != nil {
+		if err := rows.Scan(&position.Id, &position.ManagerId, &position.Name); err != nil {
 			return nil, err
 		}
 	} else {
@@ -73,7 +80,40 @@ func (pr *PositionRepo) GetOne(filter dtos.GetPositionsDTO) (*models.Position, e
 	return &position, nil
 }
 
-func (pr *PositionRepo) buildQueryParams(filter dtos.GetPositionsDTO) ([]string, []interface{}) {
+func (pr *PositionRepoPgSQL) Insert(position entities.PositionEntity) (*entities.PositionEntity, error) {
+	var positionId int
+
+	stmt := "insert into positions (name, manager_id) values ($1, $2) returning id"
+	err := DB.QueryRow(stmt, position.Name, position.ManagerId).Scan(&positionId)
+	if err != nil {
+		return nil, err
+	}
+
+	insertedPosition, err := pr.GetOne(dtos.PositionsFilterDTO{Ids: []int{positionId}})
+	if err != nil {
+		return nil, err
+	}
+
+	return insertedPosition, nil
+}
+
+func (pr *PositionRepoPgSQL) Update(position entities.PositionEntity) (*entities.PositionEntity, error) {
+
+	stmt := "update positions set name=$1, manager_id=$2 where id = $3"
+	_, err := DB.Exec(stmt, position.Name, position.ManagerId, position.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	updatedPosition, err := pr.GetOne(dtos.PositionsFilterDTO{Ids: []int{position.Id}})
+	if err != nil {
+		return nil, err
+	}
+
+	return updatedPosition, nil
+}
+
+func (pr *PositionRepoPgSQL) buildQueryParams(filter dtos.PositionsFilterDTO) ([]string, []interface{}) {
 	var conditions []string
 	var args []interface{}
 

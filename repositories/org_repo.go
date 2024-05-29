@@ -2,19 +2,24 @@ package repositories
 
 import (
 	"BeeShifts-Server/dtos"
-	"BeeShifts-Server/repositories/models"
+	"BeeShifts-Server/entities"
 	"fmt"
 	"strings"
 )
 
-type OrganizationRepo struct {
+type OrgRepo interface {
+	GetAll(filter dtos.OrgsFilterDTO) ([]entities.OrganizationEntity, error)
+	GetOne(filter dtos.OrgsFilterDTO) (*entities.OrganizationEntity, error)
 }
 
-func NewOrganizationRepo() OrganizationRepo {
-	return OrganizationRepo{}
+type OrgRepoPgSQL struct {
 }
 
-func (or *OrganizationRepo) GetAll(filter dtos.GetOrganizationsDTO) ([]models.Organization, error) {
+func NewOrgRepoPgSQL() OrgRepo {
+	return &OrgRepoPgSQL{}
+}
+
+func (or *OrgRepoPgSQL) GetAll(filter dtos.OrgsFilterDTO) ([]entities.OrganizationEntity, error) {
 	queryBase := "SELECT id, name FROM organizations"
 
 	conditions, args := or.buildQueryParams(filter)
@@ -30,9 +35,9 @@ func (or *OrganizationRepo) GetAll(filter dtos.GetOrganizationsDTO) ([]models.Or
 	}
 	defer rows.Close()
 
-	var organizations []models.Organization
+	var organizations []entities.OrganizationEntity
 	for rows.Next() {
-		var organization models.Organization
+		var organization entities.OrganizationEntity
 		if err := rows.Scan(&organization.Id, &organization.Name); err != nil {
 			return nil, err
 		}
@@ -42,7 +47,7 @@ func (or *OrganizationRepo) GetAll(filter dtos.GetOrganizationsDTO) ([]models.Or
 	return organizations, nil
 }
 
-func (or *OrganizationRepo) GetOne(filter dtos.GetOrganizationsDTO) (*models.Organization, error) {
+func (or *OrgRepoPgSQL) GetOne(filter dtos.OrgsFilterDTO) (*entities.OrganizationEntity, error) {
 	queryBase := "SELECT id, name FROM organizations"
 
 	conditions, args := or.buildQueryParams(filter)
@@ -58,7 +63,7 @@ func (or *OrganizationRepo) GetOne(filter dtos.GetOrganizationsDTO) (*models.Org
 	}
 	defer rows.Close()
 
-	var organization models.Organization
+	var organization entities.OrganizationEntity
 	if rows.Next() {
 		if err := rows.Scan(&organization.Id, &organization.Name); err != nil {
 			return nil, err
@@ -74,7 +79,7 @@ func (or *OrganizationRepo) GetOne(filter dtos.GetOrganizationsDTO) (*models.Org
 	return &organization, nil
 }
 
-func (or *OrganizationRepo) buildQueryParams(filter dtos.GetOrganizationsDTO) ([]string, []interface{}) {
+func (or *OrgRepoPgSQL) buildQueryParams(filter dtos.OrgsFilterDTO) ([]string, []interface{}) {
 	var conditions []string
 	var args []interface{}
 

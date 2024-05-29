@@ -1,6 +1,6 @@
 package dtos
 
-type GetOrganizationsDTO struct {
+type OrgsFilterDTO struct {
 	Ids   []int    `form:"id"`
 	Names []string `form:"name"`
 }

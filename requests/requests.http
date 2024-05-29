@@ -1,52 +1,82 @@
 ### Get all users
 GET {{host}}/users
 Content-Type: application/json
-
-### Get users by filters
-GET {{host}}/users?id="7"
-Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTcwMTYyMDYsImlkIjoyMX0.s5FEKJp2fqwWwS6b0OKXXZq6_W2hDfIuwd6pclD_j-o
 
 ### Get me
 GET {{host}}/users/me
 Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTcwMTAzNjYsImlkIjoyM30.q6rwspvkkHY7j4hMmZ8gdKeOSS1ZfN7Bjblrb1U8f-o
 
 ### Create user
-POST {{host}}/users
+POST {{host}}/sign_up
 Content-Type: application/json
 
 {
-  "role": 1,
+  "role": "Employee",
   "first_name": "Test",
   "last_name": "Test",
   "email": "test@mail.ru",
   "password": "111"
 }
 
-
-
-### Update user
-PUT {{host}}/user
-Content-Type: application/json
-
-{
-  "id": 9,
-  "first_name": "Pop",
-  "last_name": "Pop",
-  "organization": 1,
-  "position": 2,
-  "email": "pop@mail.ru",
-  "password": "123"
-}
-
-### Delete user by ID
-DELETE {{host}}/user/10
-Content-Type: application/json
-
-### User auth
+### User authz
 POST {{host}}/login
 Content-Type: application/json
 
 {
-  "email": "helen@mail.ru",
-  "password": "helen11"
+  "email": "test@mail.ru",
+  "password": "111"
+}
+
+### Update user
+PUT {{host}}/users/me
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTcwMTYyMDYsImlkIjoyMX0.s5FEKJp2fqwWwS6b0OKXXZq6_W2hDfIuwd6pclD_j-o
+
+{
+  "first_name": "Test",
+  "last_name": "Test",
+  "email": "test@mail.ru",
+  "password": "111"
+}
+
+### Attach user
+PUT {{host}}/users
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTcwMTAzNjYsImlkIjoyM30.q6rwspvkkHY7j4hMmZ8gdKeOSS1ZfN7Bjblrb1U8f-o
+
+{
+  "id": 23,
+  "organization_id": 1,
+  "position_id": 1
+}
+
+### Get all organizations
+GET {{host}}/organizations
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTcwMTgyODEsImlkIjoyMX0.Y2NUHGTt3Q1r1bE3paacHRADxYMFywkZiXieeXBvnuU
+
+### Get all positions
+GET {{host}}/positions
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTcwMTg5OTMsImlkIjoyMX0.SS9JN9UbHKsnrJ32-owf7X3GBHxHJwagTACEdAB4mBE
+
+### Create position
+POST {{host}}/positions
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTcwMjI2NjUsImlkIjoyMX0.QZFtIVpNfq4djGdUwMMvBXrB6va_qRlsIZmK1C7xilI
+
+{
+  "name": "Test"
+}
+
+### Update position
+PUT {{host}}/positions
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTcwMjI2NjUsImlkIjoyMX0.QZFtIVpNfq4djGdUwMMvBXrB6va_qRlsIZmK1C7xilI
+
+{
+  "id": 2,
+  "name": "Intern"
 }

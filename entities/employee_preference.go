@@ -1,9 +1,9 @@
-package models
+package entities
 
 type EmployeePreference struct {
 	Id          int    `json:"id"`
-	UserID      int    `json:"user_id"`
+	UserId      int    `json:"user_id"`
 	Preference  int    `json:"preference"`
-	ShiftTypeID int    `json:"shift_type_id"`
+	ShiftTypeId int    `json:"shift_type_id"`
 	Date        string `json:"date"`
 }

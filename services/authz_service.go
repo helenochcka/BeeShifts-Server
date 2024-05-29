@@ -5,11 +5,11 @@ import (
 	"time"
 )
 
-type AuthService struct {
+type AuthzService struct {
 	SecretKey string
 }
 
-func (as *AuthService) GenerateToken(userId int) (string, error) {
+func (as *AuthzService) GenerateToken(userId int) (string, error) {
 	payload := jwt.MapClaims{
 		"id":  userId,
 		"exp": time.Now().Add(time.Minute * 15).Unix(),
@@ -20,7 +20,7 @@ func (as *AuthService) GenerateToken(userId int) (string, error) {
 	return token, err
 }
 
-func (as *AuthService) PayloadFromToken(tokenString string) (jwt.MapClaims, error) {
+func (as *AuthzService) PayloadFromToken(tokenString string) (jwt.MapClaims, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return []byte(as.SecretKey), nil
 	})

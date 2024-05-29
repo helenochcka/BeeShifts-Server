@@ -10,14 +10,12 @@ type UsersFilterDTO struct {
 }
 
 type UserDTO struct {
-	Id           int
-	Organization *string
-	Position     *string
-	Role         string
-	FirstName    string
-	LastName     string
-	Email        string
-	Password     string
+	Id           int     `json:"id"`
+	Organization *string `json:"organization"`
+	Position     *string `json:"position"`
+	FirstName    string  `json:"first_name"`
+	LastName     string  `json:"last_name"`
+	Email        string  `json:"email"`
 }
 
 type CreateUserDTO struct {
@@ -28,27 +26,15 @@ type CreateUserDTO struct {
 	Password  string `json:"password"`
 }
 
-type UpdateUserDTO struct {
-	Id           int
-	Organization *int
-	Position     *int
-	Role         string
-	FirstName    string
-	LastName     string
-	Email        string
-	Password     string
-}
-
 type UpdateSelfUserDTO struct {
-	Id        int    `json:"id"`
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
 	Email     string `json:"email"`
 	Password  string `json:"password"`
 }
 
-type AttachEmployeeDTO struct {
-	Id           int  `json:"id"`
-	Organization *int `json:"organization_id"`
-	Position     *int `json:"position_id"`
+type AttachUserDTO struct {
+	Id             int  `json:"id"`
+	OrganizationId *int `json:"organization_id"`
+	PositionId     *int `json:"position_id"`
 }
