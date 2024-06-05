@@ -2,7 +2,7 @@ package dtos
 
 type PositionsFilterDTO struct {
 	Ids        []int    `form:"id"`
-	ManagerIds []int    `form:"manager_id"`
+	ManagerIds []int    `from:"manager_id"`
 	Names      []string `form:"name"`
 }
 

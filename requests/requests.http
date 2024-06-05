@@ -1,7 +1,16 @@
-### Get all users
-GET {{host}}/users
+### User authz
+POST {{host}}/login
 Content-Type: application/json
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTcwMTYyMDYsImlkIjoyMX0.s5FEKJp2fqwWwS6b0OKXXZq6_W2hDfIuwd6pclD_j-o
+
+{
+  "email": "helenochcka@mail.ru",
+  "password": "abc123"
+}
+
+### Get all users
+GET {{host}}/users?email=&email=
+Content-Type: application/json
+Authorization:
 
 ### Get me
 GET {{host}}/users/me
@@ -16,16 +25,7 @@ Content-Type: application/json
   "role": "Employee",
   "first_name": "Test",
   "last_name": "Test",
-  "email": "test@mail.ru",
-  "password": "111"
-}
-
-### User authz
-POST {{host}}/login
-Content-Type: application/json
-
-{
-  "email": "test@mail.ru",
+  "email": "test3@mail.ru",
   "password": "111"
 }
 
@@ -58,9 +58,9 @@ Content-Type: application/json
 Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTcwMTgyODEsImlkIjoyMX0.Y2NUHGTt3Q1r1bE3paacHRADxYMFywkZiXieeXBvnuU
 
 ### Get all positions
-GET {{host}}/positions
+GET {{host}}/positions?id=1
 Content-Type: application/json
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTcwMTg5OTMsImlkIjoyMX0.SS9JN9UbHKsnrJ32-owf7X3GBHxHJwagTACEdAB4mBE
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTcwODEwODEsImlkIjoyMX0.AL8nazJOzxlHRUTJgY_T8MN3CS6Q_kzsq5J-eRCz9kE
 
 ### Create position
 POST {{host}}/positions

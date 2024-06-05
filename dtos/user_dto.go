@@ -2,7 +2,7 @@ package dtos
 
 type UsersFilterDTO struct {
 	Ids             []int    `form:"id"`
-	OrganizationIds []int    `form:"organization_id"`
+	OrganizationIds []int    `form:"organization_id"` //TODO remove filter by organization_id
 	PositionIds     []int    `form:"position_id"`
 	FirstNames      []string `form:"first_name"`
 	LastNames       []string `form:"last_name"`

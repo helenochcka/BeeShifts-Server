@@ -1,6 +1,6 @@
 package entities
 
-type EmployeePreference struct {
+type EmployeePreferenceEntity struct {
 	Id          int    `json:"id"`
 	UserId      int    `json:"user_id"`
 	Preference  int    `json:"preference"`

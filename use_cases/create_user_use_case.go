@@ -4,6 +4,7 @@ import (
 	"BeeShifts-Server/dtos"
 	"BeeShifts-Server/entities"
 	"BeeShifts-Server/services"
+	"errors"
 )
 
 type CreateUserUseCase struct {
@@ -15,6 +16,14 @@ func NewCreateUserUseCase(us services.UserService) CreateUserUseCase {
 }
 
 func (cuuc *CreateUserUseCase) Execute(dto dtos.CreateUserDTO) (*entities.UserEntity, error) {
+	userFilter := dtos.UsersFilterDTO{
+		Emails: []string{dto.Email},
+	}
+	user, err := cuuc.userService.GetUser(userFilter)
+	if user != nil {
+		return nil, errors.New("emails already used")
+	}
+
 	userToCreate := entities.UserEntity{
 		OrganizationId: nil,
 		PositionId:     nil,
@@ -24,7 +33,7 @@ func (cuuc *CreateUserUseCase) Execute(dto dtos.CreateUserDTO) (*entities.UserEn
 		Email:          dto.Email,
 		Password:       dto.Password,
 	}
-	user, err := cuuc.userService.CreateUser(userToCreate)
+	createdUser, err := cuuc.userService.CreateUser(userToCreate)
 
-	return user, err
+	return createdUser, err
 }

@@ -22,10 +22,10 @@ func (guh *GetUserHandler) GetUserGin(c *gin.Context) {
 		return
 	}
 
-	dto := dtos.UsersFilterDTO{
+	filter := dtos.UsersFilterDTO{
 		Ids: []int{int(id.(float64))},
 	}
-	user, err := guh.getUserUseCase.Execute(dto)
+	user, err := guh.getUserUseCase.Execute(filter)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error", "details": err.Error()})

@@ -1,6 +1,6 @@
 package entities
 
-type Shift struct {
+type ShiftEntity struct {
 	Id          int    `json:"id"`
 	UserId      int    `json:"user_id"`
 	Date        string `json:"last_name"`
