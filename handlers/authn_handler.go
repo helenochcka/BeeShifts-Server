@@ -25,7 +25,7 @@ func (ah AuthnHandler) AuthnGin(role string) gin.HandlerFunc {
 		err := ah.authnUseCase.Execute(role, int(id.(float64)))
 
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Failed to authenticate"})
+			c.JSON(http.StatusForbidden, gin.H{"error": "Insufficient rights"})
 			c.Abort()
 			return
 		}
