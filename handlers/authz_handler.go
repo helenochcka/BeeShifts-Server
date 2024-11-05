@@ -16,6 +16,14 @@ func NewAuthzHandler(luc use_cases.LoginUseCase, auc use_cases.AuthzUseCase) Aut
 	return AuthzHandler{loginUseCase: luc, authUseCase: auc}
 }
 
+// Login			godoc
+// @Summary			Get API token
+// @Description		Returns API token by credentials (password should be hashed).
+// @Tags			users
+// @Produce			json
+// @Param			Credentials	body		dtos.LoginSchemaDTO	true	"Credentials JSON"
+// @Success			200			{object}	dtos.LoginResponse
+// @Router			/login [post]
 func (ah *AuthzHandler) Login(c *gin.Context) {
 	regReq := dtos.LoginSchemaDTO{}
 	if err := c.ShouldBindJSON(&regReq); err != nil {

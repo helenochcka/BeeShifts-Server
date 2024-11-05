@@ -15,6 +15,14 @@ func NewUpdatePositionHandler(upuc use_cases.UpdatePositionUseCase) UpdatePositi
 	return UpdatePositionHandler{updatePositionUseCase: upuc}
 }
 
+// UpdatePositionGin	godoc
+// @Summary				Update position
+// @Tags				positions
+// @Produce				json
+// @Param				Position	body		dtos.UpdatePositionDTO	true	"Position to update JSON"
+// @Success				200			{object}	entities.PositionEntity
+// @Router 				/positions [put]
+// @Security			ApiKeyAuth
 func (uph *UpdatePositionHandler) UpdatePositionGin(c *gin.Context) {
 	managerId, exists := c.Get("id")
 	if exists != true {

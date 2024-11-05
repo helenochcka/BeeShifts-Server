@@ -15,6 +15,16 @@ func NewGetPositionsHandler(gpuc use_cases.GetPositionsUseCase) GetPositionsHand
 	return GetPositionsHandler{getPositionsUseCase: gpuc}
 }
 
+// GetPositionsGin	godoc
+// @Summary			Get positions
+// @Tags			positions
+// @Produce			json
+// @Param			id			query	[]int		false	"Position id"	collectionFormat(multi)
+// @Param			manager_id	query	[]int		false	"Manager id"	collectionFormat(multi)
+// @Param			name		query	[]string	false	"Position name"	collectionFormat(multi)
+// @Success			200			{array}	entities.PositionEntity
+// @Router			/positions [get]
+// @Security		ApiKeyAuth
 func (gph *GetPositionsHandler) GetPositionsGin(c *gin.Context) {
 	managerId, exists := c.Get("id")
 	if exists != true {

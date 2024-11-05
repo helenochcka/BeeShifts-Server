@@ -15,6 +15,15 @@ func NewGetOrgsHandler(gouc use_cases.GetOrgsUseCase) GetOrgsHandler {
 	return GetOrgsHandler{getOrgsUseCase: gouc}
 }
 
+// GetOrgsGin	godoc
+// @Summary		Get organizations
+// @Tags		organizations
+// @Produce		json
+// @Param		id		query	[]int		false	"Organization id"	collectionFormat(multi)
+// @Param		name	query	[]string	false	"Organization name"	collectionFormat(multi)
+// @Success		200		{array}	entities.OrganizationEntity
+// @Router		/organizations [get]
+// @Security	ApiKeyAuth
 func (goh *GetOrgsHandler) GetOrgsGin(c *gin.Context) {
 	var dto dtos.OrgsFilterDTO
 

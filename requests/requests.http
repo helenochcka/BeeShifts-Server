@@ -3,14 +3,14 @@ POST {{host}}/login
 Content-Type: application/json
 
 {
-  "email": "anna.smirnova@example.com",
-  "password": "5b86a65126351d54396c7d29508d001eaf021d1b"
+  "email": "ivan.ivanov@example.com",
+  "password": "e448e1c7a90cc308d8c8047ff6c5d2204d5361ac"
 }
 
-### Get all users
-GET {{host}}/users?email=sergey.sokolov@example.com&email=natalia.kozlova@example.com
+### Get users
+GET {{host}}/users?email=sergey.sokolov@example.com&email=elena.popova@example.com
 Content-Type: application/json
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTc2MzYwNDcsImlkIjoyfQ.hGl104sBToG6zWvDv80n86xT2UnAcEyCOOsM_QfDuhI
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjkxOTE3NzUsImlkIjoxfQ.LXnU6hiPgZuPFtllLHKWrMYesXnSoFbVHA9yIGmYx1s
 
 ### Get me
 GET {{host}}/users/me
@@ -58,9 +58,9 @@ Content-Type: application/json
 Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTcwMTgyODEsImlkIjoyMX0.Y2NUHGTt3Q1r1bE3paacHRADxYMFywkZiXieeXBvnuU
 
 ### Get all positions
-GET {{host}}/positions?id=1
+GET {{host}}/positions?id=3
 Content-Type: application/json
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTcwODEwODEsImlkIjoyMX0.AL8nazJOzxlHRUTJgY_T8MN3CS6Q_kzsq5J-eRCz9kE
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzA3MzgyNzEsImlkIjoxfQ.kuKkY2XleQsDv1dZ_td9dTq7cW31yR37chVwcH9nTmE
 
 ### Create position
 POST {{host}}/positions

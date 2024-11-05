@@ -2,15 +2,23 @@ package main
 
 import (
 	"BeeShifts-Server/config"
+	_ "BeeShifts-Server/docs"
 	"BeeShifts-Server/handlers"
 	"BeeShifts-Server/repositories"
 	"BeeShifts-Server/services"
 	"BeeShifts-Server/use_cases"
 	"github.com/gin-gonic/gin"
-	_ "github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"strconv"
 )
 
+// @title BeeShifts-Server API
+// @securitydefinitions.apikey ApiKeyAuth
+// @in	header
+// @name	Authorization
+// @query.collection.format multi
+// @host      localhost:8000
 func main() {
 	cfg := config.LoadYamlConfig("config.yaml")
 	_ = repositories.ConnectDatabase(cfg.DB.Host, cfg.DB.Port, cfg.DB.UserName, cfg.DB.Password, cfg.DB.DBName)
@@ -63,6 +71,8 @@ func main() {
 	r.PUT("/users/me", authzHandler.AuthzUser(), updateUserHandler.UpdateUserGin)
 	r.PUT("/users", authzHandler.AuthzUser(), authnHandler.AuthnGin("Manager"), attachUserHandler.AttachUserGin)
 	r.PUT("/positions", authzHandler.AuthzUser(), authnHandler.AuthnGin("Manager"), updatePositionHandler.UpdatePositionGin)
+
+	r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	_ = r.Run(cfg.Server.Address + ": " + strconv.Itoa(cfg.Server.Port))
 }

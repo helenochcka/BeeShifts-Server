@@ -15,6 +15,14 @@ func NewAttachUserHandler(auuc use_cases.AttachUserUseCase) AttachUserHandler {
 	return AttachUserHandler{attachUserUseCase: auuc}
 }
 
+// AttachUserGin	godoc
+// @Summary			Attach user to organization and set position
+// @Tags			users
+// @Produce			json
+// @Param			AttachUserInfo	body		dtos.AttachUserDTO	true	"Data for user attachment JSON"
+// @Success			200				{object}	entities.UserEntity
+// @Router			/users [put]
+// @Security		ApiKeyAuth
 func (auh *AttachUserHandler) AttachUserGin(c *gin.Context) {
 	var dto dtos.AttachUserDTO
 

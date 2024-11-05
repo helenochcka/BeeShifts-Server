@@ -15,6 +15,13 @@ func NewGetUserHandler(guuc use_cases.GetUserUseCase) GetUserHandler {
 	return GetUserHandler{getUserUseCase: guuc}
 }
 
+// GetUserGin	godoc
+// @Summary		Get current user
+// @Tags		users
+// @Produce		json
+// @Success		200	{object}	dtos.UserDTO
+// @Router		/users/me [get]
+// @Security	ApiKeyAuth
 func (guh *GetUserHandler) GetUserGin(c *gin.Context) {
 	id, exists := c.Get("id")
 	if exists != true {

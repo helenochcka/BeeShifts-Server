@@ -15,6 +15,14 @@ func NewUpdateUserHandler(uuuc use_cases.UpdateUserUseCase) UpdateUserHandler {
 	return UpdateUserHandler{updateUserUseCase: uuuc}
 }
 
+// UpdateUserGin	godoc
+// @Summary			Update user
+// @Tags			users
+// @Produce			json
+// @Param			User	body		dtos.UpdateSelfUserDTO	true	"User to update JSON"
+// @Success			200		{object}	entities.UserEntity
+// @Router			/users/me [put]
+// @Security		ApiKeyAuth
 func (uuh *UpdateUserHandler) UpdateUserGin(c *gin.Context) {
 	id, exists := c.Get("id")
 	if exists != true {

@@ -20,8 +20,41 @@ func (guuc *GetUsersUseCase) Execute(dto dtos.UsersFilterDTO) ([]dtos.UserDTO, e
 	if err != nil {
 		return nil, err
 	}
-	var userDTOS []dtos.UserDTO
 
+	var organizationFilter dtos.OrgsFilterDTO
+	var positionFilter dtos.PositionsFilterDTO
+
+	for _, user := range users {
+		if user.OrganizationId != nil {
+			organizationFilter.Ids = append(organizationFilter.Ids, *user.OrganizationId)
+		}
+
+		if user.PositionId != nil {
+			positionFilter.Ids = append(positionFilter.Ids, *user.PositionId)
+		}
+	}
+
+	orgEntities, err := guuc.orgService.GetOrganizations(organizationFilter)
+	if err != nil {
+		return nil, err
+	}
+
+	orgIdToOrgNameMap := make(map[int]string)
+	for _, orgEntity := range orgEntities {
+		orgIdToOrgNameMap[orgEntity.Id] = orgEntity.Name
+	}
+
+	positionEntities, err := guuc.positionService.GetPositions(positionFilter)
+	if err != nil {
+		return nil, err
+	}
+
+	positionIdToPositionNameMap := make(map[int]string)
+	for _, positionEntity := range positionEntities {
+		positionIdToPositionNameMap[positionEntity.Id] = positionEntity.Name
+	}
+
+	var userDTOS []dtos.UserDTO
 	for _, user := range users {
 		userDTO := dtos.UserDTO{
 			Id:           user.Id,
@@ -31,27 +64,14 @@ func (guuc *GetUsersUseCase) Execute(dto dtos.UsersFilterDTO) ([]dtos.UserDTO, e
 			LastName:     user.LastName,
 			Email:        user.Email,
 		}
-
 		if user.OrganizationId != nil {
-			organizationFilter := dtos.OrgsFilterDTO{
-				Ids: []int{*user.OrganizationId},
-			}
-			organization, err := guuc.orgService.GetOrganization(organizationFilter)
-			if err != nil {
-				return nil, err
-			}
-			userDTO.Organization = &organization.Name
+			orgName := orgIdToOrgNameMap[*(user.OrganizationId)]
+			userDTO.Organization = &orgName
 		}
 
 		if user.PositionId != nil {
-			positionFilter := dtos.PositionsFilterDTO{
-				Ids: []int{*user.PositionId},
-			}
-			position, err := guuc.positionService.GetPosition(positionFilter)
-			if err != nil {
-				return nil, err
-			}
-			userDTO.Position = &position.Name
+			positionName := positionIdToPositionNameMap[*(user.PositionId)]
+			userDTO.Position = &positionName
 		}
 
 		userDTOS = append(userDTOS, userDTO)

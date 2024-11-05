@@ -15,6 +15,14 @@ func NewCreatePositionHandler(cpuc use_cases.CreatePositionUseCase) CreatePositi
 	return CreatePositionHandler{createPositionUseCase: cpuc}
 }
 
+// CreatePositionGin	godoc
+// @Summary				Create new position
+// @Tags				positions
+// @Produce				json
+// @Param				Position	body		dtos.CreatePositionDTO	true	"Position JSON"
+// @Success				201			{object}	entities.PositionEntity
+// @Router				/positions [post]
+// @Security			ApiKeyAuth
 func (cph *CreatePositionHandler) CreatePositionGin(c *gin.Context) {
 	managerId, exists := c.Get("id")
 	if exists != true {

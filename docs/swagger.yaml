@@ -1,0 +1,379 @@
+definitions:
+  dtos.AttachUserDTO:
+    properties:
+      id:
+        type: integer
+      organization_id:
+        type: integer
+      position_id:
+        type: integer
+    type: object
+  dtos.CreatePositionDTO:
+    properties:
+      name:
+        type: string
+    type: object
+  dtos.CreateUserDTO:
+    properties:
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      password:
+        type: string
+      role:
+        type: string
+    type: object
+  dtos.LoginResponse:
+    properties:
+      access_token:
+        type: string
+    type: object
+  dtos.LoginSchemaDTO:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  dtos.UpdatePositionDTO:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  dtos.UpdateSelfUserDTO:
+    properties:
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      password:
+        type: string
+    type: object
+  dtos.UserDTO:
+    properties:
+      email:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: integer
+      last_name:
+        type: string
+      organization:
+        type: string
+      position:
+        type: string
+    type: object
+  entities.OrganizationEntity:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  entities.PositionEntity:
+    properties:
+      id:
+        type: integer
+      manager_id:
+        type: integer
+      name:
+        type: string
+    type: object
+  entities.UserEntity:
+    properties:
+      email:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: integer
+      last_name:
+        type: string
+      organization_id:
+        type: integer
+      password:
+        type: string
+      position_id:
+        type: integer
+      role:
+        type: string
+    type: object
+info:
+  contact: {}
+  title: BeeShifts-Server API
+paths:
+  /login:
+    post:
+      description: Returns API token by credentials (password should be hashed).
+      parameters:
+      - description: Credentials JSON
+        in: body
+        name: Credentials
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.LoginSchemaDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.LoginResponse'
+      summary: Get API token
+      tags:
+      - users
+  /organizations:
+    get:
+      parameters:
+      - collectionFormat: multi
+        description: Organization id
+        in: query
+        items:
+          type: integer
+        name: id
+        type: array
+      - collectionFormat: multi
+        description: Organization name
+        in: query
+        items:
+          type: string
+        name: name
+        type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entities.OrganizationEntity'
+            type: array
+      security:
+      - ApiKeyAuth: []
+      summary: Get organizations
+      tags:
+      - organizations
+  /positions:
+    get:
+      parameters:
+      - collectionFormat: multi
+        description: Position id
+        in: query
+        items:
+          type: integer
+        name: id
+        type: array
+      - collectionFormat: multi
+        description: Manager id
+        in: query
+        items:
+          type: integer
+        name: manager_id
+        type: array
+      - collectionFormat: multi
+        description: Position name
+        in: query
+        items:
+          type: string
+        name: name
+        type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entities.PositionEntity'
+            type: array
+      security:
+      - ApiKeyAuth: []
+      summary: Get positions
+      tags:
+      - positions
+    post:
+      parameters:
+      - description: Position JSON
+        in: body
+        name: Position
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.CreatePositionDTO'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entities.PositionEntity'
+      security:
+      - ApiKeyAuth: []
+      summary: Create new position
+      tags:
+      - positions
+    put:
+      parameters:
+      - description: Position to update JSON
+        in: body
+        name: Position
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.UpdatePositionDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.PositionEntity'
+      security:
+      - ApiKeyAuth: []
+      summary: Update position
+      tags:
+      - positions
+  /sign_up:
+    post:
+      parameters:
+      - description: User JSON
+        in: body
+        name: User
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.CreateUserDTO'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dtos.UserDTO'
+      summary: Create new user
+      tags:
+      - users
+  /users:
+    get:
+      parameters:
+      - collectionFormat: multi
+        description: User id
+        in: query
+        items:
+          type: integer
+        name: id
+        type: array
+      - collectionFormat: multi
+        description: Organization id
+        in: query
+        items:
+          type: integer
+        name: organization_id
+        type: array
+      - collectionFormat: multi
+        description: Position id
+        in: query
+        items:
+          type: integer
+        name: position_id
+        type: array
+      - collectionFormat: multi
+        description: User's first name
+        in: query
+        items:
+          type: string
+        name: first_name
+        type: array
+      - collectionFormat: multi
+        description: User's last name
+        in: query
+        items:
+          type: string
+        name: last_name
+        type: array
+      - collectionFormat: multi
+        description: User's email
+        in: query
+        items:
+          type: string
+        name: email
+        type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dtos.UserDTO'
+            type: array
+      security:
+      - ApiKeyAuth: []
+      summary: Get users
+      tags:
+      - users
+    put:
+      parameters:
+      - description: Data for user attachment JSON
+        in: body
+        name: AttachUserInfo
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.AttachUserDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.UserEntity'
+      security:
+      - ApiKeyAuth: []
+      summary: Attach user to organization and set position
+      tags:
+      - users
+  /users/me:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.UserDTO'
+      security:
+      - ApiKeyAuth: []
+      summary: Get current user
+      tags:
+      - users
+    put:
+      parameters:
+      - description: User to update JSON
+        in: body
+        name: User
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.UpdateSelfUserDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.UserEntity'
+      security:
+      - ApiKeyAuth: []
+      summary: Update user
+      tags:
+      - users
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

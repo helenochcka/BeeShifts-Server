@@ -15,6 +15,13 @@ func NewCreateUserHandler(cuuc use_cases.CreateUserUseCase) CreateUserHandler {
 	return CreateUserHandler{createUserUseCase: cuuc}
 }
 
+// CreateUserGin	godoc
+// @Summary			Create new user
+// @Tags			users
+// @Produce			json
+// @Param			User	body		dtos.CreateUserDTO	true	"User JSON"
+// @Success			201		{object}	dtos.UserDTO
+// @Router			/sign_up [post]
 func (cuh *CreateUserHandler) CreateUserGin(c *gin.Context) {
 	var dto dtos.CreateUserDTO
 
