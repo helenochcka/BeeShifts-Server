@@ -27,12 +27,12 @@ const docTemplate = `{
                 "summary": "Get API token",
                 "parameters": [
                     {
-                        "description": "Credentials JSON",
-                        "name": "Credentials",
+                        "description": "CredsDTO JSON",
+                        "name": "CredsDTO",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dtos.LoginSchemaDTO"
+                            "$ref": "#/definitions/users.CredsDTO"
                         }
                     }
                 ],
@@ -40,7 +40,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dtos.LoginResponse"
+                            "$ref": "#/definitions/users.LoginResponseDTO"
                         }
                     }
                 }
@@ -88,7 +88,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/entities.OrganizationEntity"
+                                "$ref": "#/definitions/organizations.Entity"
                             }
                         }
                     }
@@ -147,7 +147,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/entities.PositionEntity"
+                                "$ref": "#/definitions/positions.Entity"
                             }
                         }
                     }
@@ -173,7 +173,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dtos.UpdatePositionDTO"
+                            "$ref": "#/definitions/positions.UpdateDTO"
                         }
                     }
                 ],
@@ -181,7 +181,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entities.PositionEntity"
+                            "$ref": "#/definitions/positions.Entity"
                         }
                     }
                 }
@@ -206,7 +206,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dtos.CreatePositionDTO"
+                            "$ref": "#/definitions/positions.CreateDTO"
                         }
                     }
                 ],
@@ -214,7 +214,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/entities.PositionEntity"
+                            "$ref": "#/definitions/positions.Entity"
                         }
                     }
                 }
@@ -236,7 +236,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dtos.CreateUserDTO"
+                            "$ref": "#/definitions/users.CreateDTO"
                         }
                     }
                 ],
@@ -244,7 +244,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/dtos.UserDTO"
+                            "$ref": "#/definitions/users.ViewDTO"
                         }
                     }
                 }
@@ -332,7 +332,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/dtos.UserDTO"
+                                "$ref": "#/definitions/users.ViewDTO"
                             }
                         }
                     }
@@ -353,12 +353,12 @@ const docTemplate = `{
                 "summary": "Attach user to organization and set position",
                 "parameters": [
                     {
-                        "description": "Data for user attachment JSON",
+                        "description": "Data for users attachment JSON",
                         "name": "AttachUserInfo",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dtos.AttachUserDTO"
+                            "$ref": "#/definitions/users.AttachDTO"
                         }
                     }
                 ],
@@ -366,7 +366,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entities.UserEntity"
+                            "$ref": "#/definitions/users.Entity"
                         }
                     }
                 }
@@ -390,7 +390,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dtos.UserDTO"
+                            "$ref": "#/definitions/users.ViewDTO"
                         }
                     }
                 }
@@ -415,7 +415,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dtos.UpdateSelfUserDTO"
+                            "$ref": "#/definitions/users.UpdateSelfDTO"
                         }
                     }
                 ],
@@ -423,7 +423,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entities.UserEntity"
+                            "$ref": "#/definitions/users.Entity"
                         }
                     }
                 }
@@ -431,68 +431,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "dtos.AttachUserDTO": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "organization_id": {
-                    "type": "integer"
-                },
-                "position_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "dtos.CreatePositionDTO": {
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "dtos.CreateUserDTO": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "first_name": {
-                    "type": "string"
-                },
-                "last_name": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                },
-                "role": {
-                    "type": "string"
-                }
-            }
-        },
-        "dtos.LoginResponse": {
-            "type": "object",
-            "properties": {
-                "access_token": {
-                    "type": "string"
-                }
-            }
-        },
-        "dtos.LoginSchemaDTO": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                }
-            }
-        },
-        "dtos.UpdatePositionDTO": {
+        "organizations.Entity": {
             "type": "object",
             "properties": {
                 "id": {
@@ -503,58 +442,15 @@ const docTemplate = `{
                 }
             }
         },
-        "dtos.UpdateSelfUserDTO": {
+        "positions.CreateDTO": {
             "type": "object",
             "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "first_name": {
-                    "type": "string"
-                },
-                "last_name": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                }
-            }
-        },
-        "dtos.UserDTO": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "first_name": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "last_name": {
-                    "type": "string"
-                },
-                "organization": {
-                    "type": "string"
-                },
-                "position": {
-                    "type": "string"
-                }
-            }
-        },
-        "entities.OrganizationEntity": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
                 "name": {
                     "type": "string"
                 }
             }
         },
-        "entities.PositionEntity": {
+        "positions.Entity": {
             "type": "object",
             "properties": {
                 "id": {
@@ -568,7 +464,63 @@ const docTemplate = `{
                 }
             }
         },
-        "entities.UserEntity": {
+        "positions.UpdateDTO": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "users.AttachDTO": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "organization_id": {
+                    "type": "integer"
+                },
+                "position_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "users.CreateDTO": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                }
+            }
+        },
+        "users.CredsDTO": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "users.Entity": {
             "type": "object",
             "properties": {
                 "email": {
@@ -593,6 +545,54 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "role": {
+                    "type": "string"
+                }
+            }
+        },
+        "users.LoginResponseDTO": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                }
+            }
+        },
+        "users.UpdateSelfDTO": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "users.ViewDTO": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "organizations": {
+                    "type": "string"
+                },
+                "positions": {
                     "type": "string"
                 }
             }

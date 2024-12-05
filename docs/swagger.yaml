@@ -1,84 +1,17 @@
 definitions:
-  dtos.AttachUserDTO:
-    properties:
-      id:
-        type: integer
-      organization_id:
-        type: integer
-      position_id:
-        type: integer
-    type: object
-  dtos.CreatePositionDTO:
-    properties:
-      name:
-        type: string
-    type: object
-  dtos.CreateUserDTO:
-    properties:
-      email:
-        type: string
-      first_name:
-        type: string
-      last_name:
-        type: string
-      password:
-        type: string
-      role:
-        type: string
-    type: object
-  dtos.LoginResponse:
-    properties:
-      access_token:
-        type: string
-    type: object
-  dtos.LoginSchemaDTO:
-    properties:
-      email:
-        type: string
-      password:
-        type: string
-    type: object
-  dtos.UpdatePositionDTO:
+  organizations.Entity:
     properties:
       id:
         type: integer
       name:
         type: string
     type: object
-  dtos.UpdateSelfUserDTO:
+  positions.CreateDTO:
     properties:
-      email:
-        type: string
-      first_name:
-        type: string
-      last_name:
-        type: string
-      password:
-        type: string
-    type: object
-  dtos.UserDTO:
-    properties:
-      email:
-        type: string
-      first_name:
-        type: string
-      id:
-        type: integer
-      last_name:
-        type: string
-      organization:
-        type: string
-      position:
-        type: string
-    type: object
-  entities.OrganizationEntity:
-    properties:
-      id:
-        type: integer
       name:
         type: string
     type: object
-  entities.PositionEntity:
+  positions.Entity:
     properties:
       id:
         type: integer
@@ -87,7 +20,43 @@ definitions:
       name:
         type: string
     type: object
-  entities.UserEntity:
+  positions.UpdateDTO:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  users.AttachDTO:
+    properties:
+      id:
+        type: integer
+      organization_id:
+        type: integer
+      position_id:
+        type: integer
+    type: object
+  users.CreateDTO:
+    properties:
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      password:
+        type: string
+      role:
+        type: string
+    type: object
+  users.CredsDTO:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  users.Entity:
     properties:
       email:
         type: string
@@ -104,6 +73,37 @@ definitions:
       position_id:
         type: integer
       role:
+        type: string
+    type: object
+  users.LoginResponseDTO:
+    properties:
+      access_token:
+        type: string
+    type: object
+  users.UpdateSelfDTO:
+    properties:
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      password:
+        type: string
+    type: object
+  users.ViewDTO:
+    properties:
+      email:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: integer
+      last_name:
+        type: string
+      organizations:
+        type: string
+      positions:
         type: string
     type: object
 info:
@@ -114,19 +114,19 @@ paths:
     post:
       description: Returns API token by credentials (password should be hashed).
       parameters:
-      - description: Credentials JSON
+      - description: CredsDTO JSON
         in: body
-        name: Credentials
+        name: CredsDTO
         required: true
         schema:
-          $ref: '#/definitions/dtos.LoginSchemaDTO'
+          $ref: '#/definitions/users.CredsDTO'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dtos.LoginResponse'
+            $ref: '#/definitions/users.LoginResponseDTO'
       summary: Get API token
       tags:
       - users
@@ -154,7 +154,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/entities.OrganizationEntity'
+              $ref: '#/definitions/organizations.Entity'
             type: array
       security:
       - ApiKeyAuth: []
@@ -192,7 +192,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/entities.PositionEntity'
+              $ref: '#/definitions/positions.Entity'
             type: array
       security:
       - ApiKeyAuth: []
@@ -206,14 +206,14 @@ paths:
         name: Position
         required: true
         schema:
-          $ref: '#/definitions/dtos.CreatePositionDTO'
+          $ref: '#/definitions/positions.CreateDTO'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/entities.PositionEntity'
+            $ref: '#/definitions/positions.Entity'
       security:
       - ApiKeyAuth: []
       summary: Create new position
@@ -226,14 +226,14 @@ paths:
         name: Position
         required: true
         schema:
-          $ref: '#/definitions/dtos.UpdatePositionDTO'
+          $ref: '#/definitions/positions.UpdateDTO'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/entities.PositionEntity'
+            $ref: '#/definitions/positions.Entity'
       security:
       - ApiKeyAuth: []
       summary: Update position
@@ -247,14 +247,14 @@ paths:
         name: User
         required: true
         schema:
-          $ref: '#/definitions/dtos.CreateUserDTO'
+          $ref: '#/definitions/users.CreateDTO'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/dtos.UserDTO'
+            $ref: '#/definitions/users.ViewDTO'
       summary: Create new user
       tags:
       - users
@@ -310,7 +310,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/dtos.UserDTO'
+              $ref: '#/definitions/users.ViewDTO'
             type: array
       security:
       - ApiKeyAuth: []
@@ -319,19 +319,19 @@ paths:
       - users
     put:
       parameters:
-      - description: Data for user attachment JSON
+      - description: Data for users attachment JSON
         in: body
         name: AttachUserInfo
         required: true
         schema:
-          $ref: '#/definitions/dtos.AttachUserDTO'
+          $ref: '#/definitions/users.AttachDTO'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/entities.UserEntity'
+            $ref: '#/definitions/users.Entity'
       security:
       - ApiKeyAuth: []
       summary: Attach user to organization and set position
@@ -345,7 +345,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dtos.UserDTO'
+            $ref: '#/definitions/users.ViewDTO'
       security:
       - ApiKeyAuth: []
       summary: Get current user
@@ -358,14 +358,14 @@ paths:
         name: User
         required: true
         schema:
-          $ref: '#/definitions/dtos.UpdateSelfUserDTO'
+          $ref: '#/definitions/users.UpdateSelfDTO'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/entities.UserEntity'
+            $ref: '#/definitions/users.Entity'
       security:
       - ApiKeyAuth: []
       summary: Update user

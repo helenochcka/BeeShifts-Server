@@ -3,8 +3,8 @@ POST {{host}}/login
 Content-Type: application/json
 
 {
-  "email": "ivan.ivanov@example.com",
-  "password": "e448e1c7a90cc308d8c8047ff6c5d2204d5361ac"
+  "email": "ivan",
+  "password": "123"
 }
 
 ### Get users
@@ -15,7 +15,7 @@ Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjkxOTE3NzUsImlk
 ### Get me
 GET {{host}}/users/me
 Content-Type: application/json
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTc2MzUwMjksImlkIjo0fQ.BQlesAUWrWpjKL1zX9N2lfFAsuMjy5bxFSEs04USDtE
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzE0NTEyNzcsImlkIjoxfQ.i90LHxLRmBTOeZ7AaZ_XdTy2SJsfe70eVkYR8YOjob4
 
 ### Create user
 POST {{host}}/sign_up
