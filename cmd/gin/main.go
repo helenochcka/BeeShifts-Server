@@ -16,6 +16,7 @@ import (
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"log"
 	"strconv"
 )
 
@@ -26,6 +27,7 @@ import (
 // @query.collection.format multi
 // @host      localhost:8000
 func main() {
+	log.Println("Loading configuration...")
 	cfg := config.LoadYamlConfig("config/config.yaml")
 	_ = db.ConnectDatabase(cfg.DB.Host, cfg.DB.Port, cfg.DB.UserName, cfg.DB.Password, cfg.DB.DBName)
 	r := gin.Default()
