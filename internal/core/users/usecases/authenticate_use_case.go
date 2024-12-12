@@ -2,6 +2,7 @@ package usecases
 
 import (
 	"BeeShifts-Server/internal/core/users/services"
+	"log/slog"
 )
 
 type AuthenticateUseCase struct {
@@ -13,9 +14,11 @@ func NewAuthenticateUseCase(as services.AuthService) AuthenticateUseCase {
 }
 
 func (auc *AuthenticateUseCase) Execute(token string) (*int, error) {
+	slog.Info("Getting payload from token...", "token", token)
 	tokenPayload, err := auc.authService.PayloadFromToken(token)
 
 	if err != nil {
+		slog.Error("Error getting payload from token...", "err", err)
 		return nil, err
 	}
 

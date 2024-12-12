@@ -7,6 +7,7 @@ import (
 type UserRepo interface {
 	GetAll(filter users.FilterDTO) ([]users.Entity, error)
 	GetOne(filter users.FilterDTO) (*users.Entity, error)
+	GetOneOrNil(filter users.FilterDTO) (*users.Entity, error)
 	Insert(user users.Entity) (*users.Entity, error)
 	Update(user users.Entity) (*users.Entity, error)
 }

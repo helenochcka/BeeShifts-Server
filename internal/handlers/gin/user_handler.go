@@ -173,7 +173,7 @@ func (uhg *UserHandlerGin) Update(c *gin.Context) {
 
 func (uhg *UserHandlerGin) mapUsersErrToHTTPErr(err error, c *gin.Context) {
 	switch {
-	case errors.Is(err, users.MultipleUsersFound) || errors.Is(err, users.EmailAlreadyUsed):
+	case errors.Is(err, users.EmailAlreadyUsed):
 		c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
 	case errors.Is(err, users.UserNotFound):
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})

@@ -1,6 +1,8 @@
 package config
 
 type Config struct {
+	Environment string `yaml:"environment"`
+
 	Server struct {
 		Address      string
 		Port         int

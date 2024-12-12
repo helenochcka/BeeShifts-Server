@@ -11,11 +11,14 @@ import (
 	usersServices "BeeShifts-Server/internal/core/users/services"
 	usersUsecases "BeeShifts-Server/internal/core/users/usecases"
 	handlersGin "BeeShifts-Server/internal/handlers/gin"
+	"BeeShifts-Server/internal/middlewares"
 	"BeeShifts-Server/internal/repositories/postgres"
 	"BeeShifts-Server/pkg/db"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"log/slog"
+	"os"
 	"strconv"
 )
 
@@ -26,9 +29,17 @@ import (
 // @query.collection.format multi
 // @host      localhost:8000
 func main() {
+
 	cfg := config.LoadYamlConfig("config/config.yaml")
 	_ = db.ConnectDatabase(cfg.DB.Host, cfg.DB.Port, cfg.DB.UserName, cfg.DB.Password, cfg.DB.DBName)
 	r := gin.Default()
+
+	var slogHandler slog.Handler = slog.NewJSONHandler(os.Stdout, nil)
+
+	if cfg.Environment == "dev" {
+		slogHandler = slog.NewTextHandler(os.Stdout, nil)
+	}
+	logger := slog.New(slogHandler)
 
 	userRepository := postgres.NewUserRepoPgSQL()
 	organizationRepository := postgres.NewOrgRepoPgSQL()
@@ -57,6 +68,8 @@ func main() {
 	authenticateUseCase := usersUsecases.NewAuthenticateUseCase(authService)
 	authorizeUseCase := usersUsecases.NewAuthorizeUseCase(userService)
 	authHandler := handlersGin.NewAuthHandlerGin(loginUseCase, authenticateUseCase, authorizeUseCase)
+
+	r.Use(middlewares.RequestId(), middlewares.Logging(logger))
 
 	r.POST("/sign_up", userHandler.Create)
 	r.POST("/login", authHandler.Login)

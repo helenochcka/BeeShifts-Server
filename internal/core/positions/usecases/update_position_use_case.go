@@ -3,6 +3,7 @@ package usecases
 import (
 	"BeeShifts-Server/internal/core/positions"
 	"BeeShifts-Server/internal/core/positions/services"
+	"log/slog"
 )
 
 type UpdatePositionUseCase struct {
@@ -19,7 +20,13 @@ func (upuc *UpdatePositionUseCase) Execute(managerId int, dto positions.UpdateDT
 		ManagerId: managerId,
 		Name:      dto.Name,
 	}
+	slog.Info("Updating position...", "positionToUpdate", positionToUpdate)
 	updatedPosition, err := upuc.positionService.UpdatePosition(positionToUpdate)
 
-	return updatedPosition, err
+	if err != nil {
+		slog.Error("Error updating position...", "error", err)
+		return nil, err
+	}
+
+	return updatedPosition, nil
 }

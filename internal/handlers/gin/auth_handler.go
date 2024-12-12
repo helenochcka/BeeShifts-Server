@@ -5,6 +5,7 @@ import (
 	"BeeShifts-Server/internal/core/users/usecases"
 	"errors"
 	"github.com/gin-gonic/gin"
+	"log/slog"
 	"net/http"
 )
 
@@ -41,7 +42,7 @@ func (ahg *AuthHandlerGin) Login(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid json body, " + err.Error()})
 		return
 	}
-
+	slog.Info("Token generation...")
 	token, err := ahg.loginUseCase.Execute(creds)
 	if err != nil {
 		ahg.mapUsersErrToHTTPErr(err, c)
@@ -73,6 +74,7 @@ func (ahg *AuthHandlerGin) AuthorizeGin(role string) gin.HandlerFunc {
 		id, exists := c.Get("id")
 		if exists != true {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "user id is missing in request context"})
+			c.Abort()
 			return
 		}
 
@@ -90,8 +92,6 @@ func (ahg *AuthHandlerGin) AuthorizeGin(role string) gin.HandlerFunc {
 
 func (ahg *AuthHandlerGin) mapUsersErrToHTTPErr(err error, c *gin.Context) {
 	switch {
-	case errors.Is(err, users.MultipleUsersFound):
-		c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
 	case errors.Is(err, users.UserNotFound):
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 	case errors.Is(err, users.IncorrectCredentials) ||
