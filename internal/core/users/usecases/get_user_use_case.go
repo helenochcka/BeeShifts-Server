@@ -7,6 +7,7 @@ import (
 	positionsServices "BeeShifts-Server/internal/core/positions/services"
 	"BeeShifts-Server/internal/core/users"
 	usersServices "BeeShifts-Server/internal/core/users/services"
+	"log/slog"
 )
 
 type GetUserUseCase struct {
@@ -20,8 +21,11 @@ func NewGetUserUseCase(us usersServices.UserService, os orgsServices.OrgService,
 }
 
 func (guuc *GetUserUseCase) Execute(filter users.FilterDTO) (*users.ViewDTO, error) {
+	slog.Info("Getting user by filter...", "filter", filter)
 	user, err := guuc.userService.GetUser(filter)
+
 	if err != nil {
+		slog.Error("Error getting user...", "err", err)
 		return nil, err
 	}
 
@@ -34,27 +38,39 @@ func (guuc *GetUserUseCase) Execute(filter users.FilterDTO) (*users.ViewDTO, err
 		Email:        user.Email,
 	}
 
+	slog.Info("Checking if organization id present in user...", "user", user)
 	if user.OrganizationId != nil {
 		orgFilter := organizations.FilterDTO{
 			Ids: []int{*user.OrganizationId},
 		}
+
+		slog.Info("Getting organization by filter...", "filter", orgFilter)
 		organization, err := guuc.orgService.GetOrganization(orgFilter)
+
 		if err != nil {
+			slog.Error("Error getting organization...", "err", err)
 			return nil, err
 		}
+
 		userDTO.Organization = &organization.Name
 	}
 
+	slog.Info("Checking if position id present in user...", "user", user)
 	if user.PositionId != nil {
 		positionFilter := positions.FilterDTO{
 			Ids: []int{*user.PositionId},
 		}
+
+		slog.Info("Getting position by filter...", "filter", positionFilter)
 		position, err := guuc.positionService.GetPosition(positionFilter)
+
 		if err != nil {
+			slog.Error("Error getting position...", "err", err)
 			return nil, err
 		}
+
 		userDTO.Position = &position.Name
 	}
 
-	return &userDTO, err
+	return &userDTO, nil
 }

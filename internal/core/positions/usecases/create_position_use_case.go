@@ -3,6 +3,7 @@ package usecases
 import (
 	"BeeShifts-Server/internal/core/positions"
 	"BeeShifts-Server/internal/core/positions/services"
+	"log/slog"
 )
 
 type CreatePositionUseCase struct {
@@ -18,7 +19,13 @@ func (cpuc *CreatePositionUseCase) Execute(managerId int, dto positions.CreateDT
 		ManagerId: managerId,
 		Name:      dto.Name,
 	}
+	slog.Info("Creating position...", "positionToCreate", positionToCreate)
 	createdPosition, err := cpuc.positionService.CreatePosition(positionToCreate)
 
-	return createdPosition, err
+	if err != nil {
+		slog.Error("Error creating position...", "error", err)
+		return nil, err
+	}
+
+	return createdPosition, nil
 }

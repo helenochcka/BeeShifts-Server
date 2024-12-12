@@ -122,8 +122,6 @@ func (phg *PositionHandlerGin) Create(c *gin.Context) {
 
 func (phg *PositionHandlerGin) mapPositionsErrToHTTPErr(err error, c *gin.Context) {
 	switch {
-	case errors.Is(err, positions.MultiplePositionsFound):
-		c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
 	case errors.Is(err, positions.PositionNotFound):
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 	default:

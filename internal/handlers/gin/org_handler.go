@@ -45,8 +45,6 @@ func (ohg *OrgHandlerGin) GetMany(c *gin.Context) {
 
 func (ohg *OrgHandlerGin) mapOrgsErrToHTTPErr(err error, c *gin.Context) {
 	switch {
-	case errors.Is(err, organizations.MultipleOrgsFound):
-		c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
 	case errors.Is(err, organizations.OrgNotFound):
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 	default:

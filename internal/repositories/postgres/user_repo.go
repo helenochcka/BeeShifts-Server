@@ -6,6 +6,7 @@ import (
 	"BeeShifts-Server/internal/repositories/ifaces"
 	"BeeShifts-Server/pkg/db"
 	"database/sql"
+	"errors"
 	"fmt"
 	"strings"
 )
@@ -102,6 +103,20 @@ func (ur *UserRepoPgSQL) GetOne(filter users.FilterDTO) (*users.Entity, error) {
 	}
 
 	return &entity, nil
+}
+
+func (ur *UserRepoPgSQL) GetOneOrNil(filter users.FilterDTO) (*users.Entity, error) {
+	entity, err := ur.GetOne(filter)
+
+	if errors.Is(err, users.UserNotFound) {
+		return nil, nil
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	return entity, nil
 }
 
 func (ur *UserRepoPgSQL) Insert(entity users.Entity) (*users.Entity, error) {

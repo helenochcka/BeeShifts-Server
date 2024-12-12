@@ -32,6 +32,15 @@ func (us *UserService) GetUser(filter users.FilterDTO) (*users.Entity, error) {
 	return userEntity, nil
 }
 
+func (us *UserService) FindUser(filter users.FilterDTO) (*users.Entity, error) {
+	userEntity, err := us.userRepo.GetOneOrNil(filter)
+	if err != nil {
+		return nil, us.mapRepoErrToUsersErr(err)
+	}
+
+	return userEntity, nil
+}
+
 func (us *UserService) CreateUser(userToCreate users.Entity) (*users.Entity, error) {
 	createdUser, err := us.userRepo.Insert(userToCreate)
 	if err != nil {
