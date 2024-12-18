@@ -26,7 +26,7 @@ func (auc *AuthorizeUseCase) Execute(role string, id int) error {
 		return err
 	}
 
-	slog.Error("Checking if user has sufficient role...", "user", user, "role", role)
+	slog.Info("Checking if user has sufficient role...", "user", user, "role", role)
 	if user.Role != role {
 		slog.Error("User doesn't have sufficient rights...", "user", user, "role", role)
 		return users.InsufficientRights
