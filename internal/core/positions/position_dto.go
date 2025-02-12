@@ -6,6 +6,11 @@ type FilterDTO struct {
 	Names      []string `form:"name"`
 }
 
+type GetDTO struct {
+	Ids   []int    `form:"id"`
+	Names []string `form:"name"`
+}
+
 type UpdateDTO struct {
 	Id   int    `json:"id"`
 	Name string `json:"name"`

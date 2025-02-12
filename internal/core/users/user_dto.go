@@ -34,9 +34,12 @@ type UpdateSelfDTO struct {
 }
 
 type AttachDTO struct {
-	Id             int  `json:"id"`
-	OrganizationId *int `json:"organization_id"`
-	PositionId     *int `json:"position_id"`
+	Id         int `json:"id"`
+	PositionId int `json:"position_id"`
+}
+
+type DetachDTO struct {
+	Id int `json:"id"`
 }
 
 type CredsDTO struct {

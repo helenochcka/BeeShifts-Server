@@ -31,8 +31,6 @@ definitions:
     properties:
       id:
         type: integer
-      organization_id:
-        type: integer
       position_id:
         type: integer
     type: object
@@ -55,6 +53,11 @@ definitions:
         type: string
       password:
         type: string
+    type: object
+  users.DetachDTO:
+    properties:
+      id:
+        type: integer
     type: object
   users.Entity:
     properties:
@@ -170,13 +173,6 @@ paths:
         items:
           type: integer
         name: id
-        type: array
-      - collectionFormat: multi
-        description: Manager id
-        in: query
-        items:
-          type: integer
-        name: manager_id
         type: array
       - collectionFormat: multi
         description: Position name
@@ -335,6 +331,27 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Attach user to organization and set position
+      tags:
+      - users
+  /users/detach:
+    put:
+      parameters:
+      - description: Data for users detachment JSON
+        in: body
+        name: DetachUserInfo
+        required: true
+        schema:
+          $ref: '#/definitions/users.DetachDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/users.Entity'
+      security:
+      - ApiKeyAuth: []
+      summary: Detach user to organization and reset position
       tags:
       - users
   /users/me:

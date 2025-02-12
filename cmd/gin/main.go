@@ -52,14 +52,15 @@ func main() {
 	getUserUseCase := usersUsecases.NewGetUserUseCase(userService, organizationService, positionService)
 	getUsersUseCase := usersUsecases.NewGetUsersUseCase(userService, organizationService, positionService)
 	createUserUseCase := usersUsecases.NewCreateUserUseCase(userService)
-	attachUserUseCase := usersUsecases.NewAttachUserUseCase(userService)
+	attachUserUseCase := usersUsecases.NewAttachUserUseCase(userService, positionService)
+	detachUserUseCase := usersUsecases.NewDetachUserUseCase(userService)
 	updateUserUseCase := usersUsecases.NewUpdateUserUseCase(userService)
 	getOrgsUseCase := orgsUsecases.NewGetOrgsUseCase(organizationService)
 	getPositionsUseCase := positionsUsecases.NewGetPositionsUseCase(positionService)
 	createPositionUseCase := positionsUsecases.NewCreatePositionUseCase(positionService)
 	updatePositionUseCase := positionsUsecases.NewUpdatePositionUseCase(positionService)
 
-	userHandler := handlersGin.NewUserHandlerGin(getUserUseCase, getUsersUseCase, createUserUseCase, attachUserUseCase, updateUserUseCase)
+	userHandler := handlersGin.NewUserHandlerGin(getUserUseCase, getUsersUseCase, createUserUseCase, attachUserUseCase, detachUserUseCase, updateUserUseCase)
 	orgHandler := handlersGin.NewOrgHandlerGin(getOrgsUseCase)
 	positionHandler := handlersGin.NewPositionHandlerGin(getPositionsUseCase, updatePositionUseCase, createPositionUseCase)
 
@@ -82,6 +83,7 @@ func main() {
 
 	r.PUT("/users/me", authHandler.AuthenticateUser(), userHandler.Update)
 	r.PUT("/users", authHandler.AuthenticateUser(), authHandler.AuthorizeGin(userRoles.Manager), userHandler.Attach)
+	r.PUT("/users/detach", authHandler.AuthenticateUser(), authHandler.AuthorizeGin(userRoles.Manager), userHandler.Detach)
 	r.PUT("/positions", authHandler.AuthenticateUser(), authHandler.AuthorizeGin(userRoles.Manager), positionHandler.Update)
 
 	r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
