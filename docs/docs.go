@@ -123,16 +123,6 @@ const docTemplate = `{
                     {
                         "type": "array",
                         "items": {
-                            "type": "integer"
-                        },
-                        "collectionFormat": "multi",
-                        "description": "Manager id",
-                        "name": "manager_id",
-                        "in": "query"
-                    },
-                    {
-                        "type": "array",
-                        "items": {
                             "type": "string"
                         },
                         "collectionFormat": "multi",
@@ -337,7 +327,9 @@ const docTemplate = `{
                         }
                     }
                 }
-            },
+            }
+        },
+        "/users/attach": {
             "put": {
                 "security": [
                     {
@@ -359,6 +351,41 @@ const docTemplate = `{
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/users.AttachDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/users.Entity"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/detach": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Detach user from organization and reset position",
+                "parameters": [
+                    {
+                        "description": "Data for users detachment JSON",
+                        "name": "DetachUserInfo",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/users.DetachDTO"
                         }
                     }
                 ],
@@ -481,9 +508,6 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
-                "organization_id": {
-                    "type": "integer"
-                },
                 "position_id": {
                     "type": "integer"
                 }
@@ -517,6 +541,14 @@ const docTemplate = `{
                 },
                 "password": {
                     "type": "string"
+                }
+            }
+        },
+        "users.DetachDTO": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
                 }
             }
         },
@@ -609,7 +641,7 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "",
+	Version:          "1.0",
 	Host:             "",
 	BasePath:         "",
 	Schemes:          []string{},

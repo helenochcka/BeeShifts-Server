@@ -30,7 +30,6 @@ func NewPositionHandlerGin(
 // @Tags			positions
 // @Produce			json
 // @Param			id			query	[]int		false	"Position id"	collectionFormat(multi)
-// @Param			manager_id	query	[]int		false	"Manager id"	collectionFormat(multi)
 // @Param			name		query	[]string	false	"Position name"	collectionFormat(multi)
 // @Success			200			{array}	positions.Entity
 // @Router			/positions [get]
@@ -41,14 +40,16 @@ func (phg *PositionHandlerGin) GetMany(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "user id is missing in request context"})
 		return
 	}
-	var filter positions.FilterDTO
+	var dto positions.FilterDTO
 
-	if err := c.ShouldBindQuery(&filter); err != nil {
+	if err := c.ShouldBindQuery(&dto); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid query arguments, " + err.Error()})
 		return
 	}
 
-	positionEntities, err := phg.getPositionsUseCase.Execute(managerId.(int), filter)
+	dto.ManagerIds = []int{managerId.(int)}
+
+	positionEntities, err := phg.getPositionsUseCase.Execute(dto)
 
 	if err != nil {
 		phg.mapPositionsErrToHTTPErr(err, c)

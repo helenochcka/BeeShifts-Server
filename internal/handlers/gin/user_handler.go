@@ -13,6 +13,7 @@ type UserHandlerGin struct {
 	getUsersUseCase   usecases.GetUsersUseCase
 	createUserUseCase usecases.CreateUserUseCase
 	attachUserUseCase usecases.AttachUserUseCase
+	detachUserUseCase usecases.DetachUserUseCase
 	updateUserUseCase usecases.UpdateUserUseCase
 }
 
@@ -21,6 +22,7 @@ func NewUserHandlerGin(
 	gusuc usecases.GetUsersUseCase,
 	cuuc usecases.CreateUserUseCase,
 	auuc usecases.AttachUserUseCase,
+	duuc usecases.DetachUserUseCase,
 	uuuc usecases.UpdateUserUseCase) UserHandlerGin {
 
 	return UserHandlerGin{
@@ -28,6 +30,7 @@ func NewUserHandlerGin(
 		getUsersUseCase:   gusuc,
 		createUserUseCase: cuuc,
 		attachUserUseCase: auuc,
+		detachUserUseCase: duuc,
 		updateUserUseCase: uuuc}
 }
 
@@ -120,9 +123,15 @@ func (uhg *UserHandlerGin) Create(c *gin.Context) {
 // @Produce			json
 // @Param			AttachUserInfo	body		users.AttachDTO	true	"Data for users attachment JSON"
 // @Success			200				{object}	users.Entity
-// @Router			/users [put]
+// @Router			/users/attach [put]
 // @Security		ApiKeyAuth
 func (uhg *UserHandlerGin) Attach(c *gin.Context) {
+	managerId, exists := c.Get("id")
+	if exists != true {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "user id is missing in request context"})
+		return
+	}
+
 	var dto users.AttachDTO
 
 	if err := c.ShouldBindJSON(&dto); err != nil {
@@ -130,7 +139,39 @@ func (uhg *UserHandlerGin) Attach(c *gin.Context) {
 		return
 	}
 
-	userEntity, err := uhg.attachUserUseCase.Execute(dto)
+	userEntity, err := uhg.attachUserUseCase.Execute(managerId.(int), dto)
+
+	if err != nil {
+		uhg.mapUsersErrToHTTPErr(err, c)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": userEntity})
+}
+
+// Detach	godoc
+// @Summary			Detach user from organization and reset position
+// @Tags			users
+// @Produce			json
+// @Param			DetachUserInfo	body		users.DetachDTO	true	"Data for users detachment JSON"
+// @Success			200				{object}	users.Entity
+// @Router			/users/detach [put]
+// @Security		ApiKeyAuth
+func (uhg *UserHandlerGin) Detach(c *gin.Context) {
+	managerId, exists := c.Get("id")
+	if exists != true {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "user id is missing in request context"})
+		return
+	}
+
+	var dto users.DetachDTO
+
+	if err := c.ShouldBindJSON(&dto); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid json body, " + err.Error()})
+		return
+	}
+
+	userEntity, err := uhg.detachUserUseCase.Execute(managerId.(int), dto)
 
 	if err != nil {
 		uhg.mapUsersErrToHTTPErr(err, c)
@@ -173,12 +214,16 @@ func (uhg *UserHandlerGin) Update(c *gin.Context) {
 
 func (uhg *UserHandlerGin) mapUsersErrToHTTPErr(err error, c *gin.Context) {
 	switch {
-	case errors.Is(err, users.EmailAlreadyUsed):
+	case errors.Is(err, users.EmailAlreadyUsed) ||
+		errors.Is(err, users.EmployeeAlreadyAttached) ||
+		errors.Is(err, users.EmployeeNotAttached):
 		c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
 	case errors.Is(err, users.UserNotFound):
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 	case errors.Is(err, users.RoleDoesNotExist):
 		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": err.Error()})
+	case errors.Is(err, users.InsufficientRights):
+		c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
 	default:
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}

@@ -2,7 +2,8 @@
     "swagger": "2.0",
     "info": {
         "title": "BeeShifts-Server API",
-        "contact": {}
+        "contact": {},
+        "version": "1.0"
     },
     "paths": {
         "/login": {
@@ -108,16 +109,6 @@
                         "collectionFormat": "multi",
                         "description": "Position id",
                         "name": "id",
-                        "in": "query"
-                    },
-                    {
-                        "type": "array",
-                        "items": {
-                            "type": "integer"
-                        },
-                        "collectionFormat": "multi",
-                        "description": "Manager id",
-                        "name": "manager_id",
                         "in": "query"
                     },
                     {
@@ -327,7 +318,9 @@
                         }
                     }
                 }
-            },
+            }
+        },
+        "/users/attach": {
             "put": {
                 "security": [
                     {
@@ -349,6 +342,41 @@
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/users.AttachDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/users.Entity"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/detach": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Detach user from organization and reset position",
+                "parameters": [
+                    {
+                        "description": "Data for users detachment JSON",
+                        "name": "DetachUserInfo",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/users.DetachDTO"
                         }
                     }
                 ],
@@ -471,9 +499,6 @@
                 "id": {
                     "type": "integer"
                 },
-                "organization_id": {
-                    "type": "integer"
-                },
                 "position_id": {
                     "type": "integer"
                 }
@@ -507,6 +532,14 @@
                 },
                 "password": {
                     "type": "string"
+                }
+            }
+        },
+        "users.DetachDTO": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
                 }
             }
         },
