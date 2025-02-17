@@ -112,6 +112,7 @@ definitions:
 info:
   contact: {}
   title: BeeShifts-Server API
+  version: "1.0"
 paths:
   /login:
     post:
@@ -313,6 +314,7 @@ paths:
       summary: Get users
       tags:
       - users
+  /users/attach:
     put:
       parameters:
       - description: Data for users attachment JSON
@@ -351,7 +353,7 @@ paths:
             $ref: '#/definitions/users.Entity'
       security:
       - ApiKeyAuth: []
-      summary: Detach user to organization and reset position
+      summary: Detach user from organization and reset position
       tags:
       - users
   /users/me:

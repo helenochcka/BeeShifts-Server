@@ -123,7 +123,7 @@ func (uhg *UserHandlerGin) Create(c *gin.Context) {
 // @Produce			json
 // @Param			AttachUserInfo	body		users.AttachDTO	true	"Data for users attachment JSON"
 // @Success			200				{object}	users.Entity
-// @Router			/users [put]
+// @Router			/users/attach [put]
 // @Security		ApiKeyAuth
 func (uhg *UserHandlerGin) Attach(c *gin.Context) {
 	managerId, exists := c.Get("id")
@@ -150,7 +150,7 @@ func (uhg *UserHandlerGin) Attach(c *gin.Context) {
 }
 
 // Detach	godoc
-// @Summary			Detach user to organization and reset position
+// @Summary			Detach user from organization and reset position
 // @Tags			users
 // @Produce			json
 // @Param			DetachUserInfo	body		users.DetachDTO	true	"Data for users detachment JSON"
@@ -222,6 +222,8 @@ func (uhg *UserHandlerGin) mapUsersErrToHTTPErr(err error, c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 	case errors.Is(err, users.RoleDoesNotExist):
 		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": err.Error()})
+	case errors.Is(err, users.InsufficientRights):
+		c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
 	default:
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}

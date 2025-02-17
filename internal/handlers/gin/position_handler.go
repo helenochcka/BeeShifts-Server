@@ -40,14 +40,16 @@ func (phg *PositionHandlerGin) GetMany(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "user id is missing in request context"})
 		return
 	}
-	var dto positions.GetDTO
+	var dto positions.FilterDTO
 
 	if err := c.ShouldBindQuery(&dto); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid query arguments, " + err.Error()})
 		return
 	}
 
-	positionEntities, err := phg.getPositionsUseCase.Execute(managerId.(int), dto)
+	dto.ManagerIds = []int{managerId.(int)}
+
+	positionEntities, err := phg.getPositionsUseCase.Execute(dto)
 
 	if err != nil {
 		phg.mapPositionsErrToHTTPErr(err, c)

@@ -327,7 +327,9 @@ const docTemplate = `{
                         }
                     }
                 }
-            },
+            }
+        },
+        "/users/attach": {
             "put": {
                 "security": [
                     {
@@ -375,7 +377,7 @@ const docTemplate = `{
                 "tags": [
                     "users"
                 ],
-                "summary": "Detach user to organization and reset position",
+                "summary": "Detach user from organization and reset position",
                 "parameters": [
                     {
                         "description": "Data for users detachment JSON",
@@ -639,7 +641,7 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "",
+	Version:          "1.0",
 	Host:             "",
 	BasePath:         "",
 	Schemes:          []string{},

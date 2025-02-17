@@ -21,7 +21,7 @@ func (upuc *UpdatePositionUseCase) Execute(managerId int, dto positions.UpdateDT
 		ManagerIds: []int{managerId},
 	}
 
-	slog.Info("Checking position by filter...", "filter", filter)
+	slog.Info("Getting position to update by filter...", "filter", filter)
 	positionToUpdate, err := upuc.positionService.GetPosition(filter)
 
 	if err != nil {

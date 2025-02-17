@@ -23,6 +23,7 @@ import (
 )
 
 // @title BeeShifts-Server API
+// @version 1.0
 // @securitydefinitions.apikey ApiKeyAuth
 // @in	header
 // @name	Authorization
@@ -82,7 +83,7 @@ func main() {
 	r.GET("/positions", authHandler.AuthenticateUser(), authHandler.AuthorizeGin(userRoles.Manager), positionHandler.GetMany)
 
 	r.PUT("/users/me", authHandler.AuthenticateUser(), userHandler.Update)
-	r.PUT("/users", authHandler.AuthenticateUser(), authHandler.AuthorizeGin(userRoles.Manager), userHandler.Attach)
+	r.PUT("/users/attach", authHandler.AuthenticateUser(), authHandler.AuthorizeGin(userRoles.Manager), userHandler.Attach)
 	r.PUT("/users/detach", authHandler.AuthenticateUser(), authHandler.AuthorizeGin(userRoles.Manager), userHandler.Detach)
 	r.PUT("/positions", authHandler.AuthenticateUser(), authHandler.AuthorizeGin(userRoles.Manager), positionHandler.Update)
 

@@ -18,25 +18,31 @@ func NewAttachUserUseCase(us services.UserService, ps positionsServices.Position
 }
 
 func (auuc *AttachUserUseCase) Execute(managerId int, dto users.AttachDTO) (*users.Entity, error) {
-	filter := users.FilterDTO{Ids: []int{dto.Id}}
-	slog.Info("Getting user to attach by filter...", "filter", filter)
-	userToUpdate, err := auuc.userService.GetUser(filter)
+	slog.Info("Getting user to attach by id...", "id", dto.Id)
+	employeeToAttach, err := auuc.userService.GetUser(users.FilterDTO{Ids: []int{dto.Id}})
 
 	if err != nil {
 		slog.Error("Error getting user to attach...", "err", err)
 		return nil, err
 	}
 
+	slog.Info("Validating user's role...", "userRole", employeeToAttach.Role)
+	if employeeToAttach.Role != users.Employee {
+		slog.Error("Insufficient rights to attach user...", "user", employeeToAttach)
+		return nil, users.InsufficientRights
+	}
+
+	slog.Info("Getting current manager by id...", "id", managerId)
 	manager, err := auuc.userService.GetUser(users.FilterDTO{Ids: []int{managerId}})
 
 	if err != nil {
-		slog.Error("Error getting manager to attach...", "err", err)
+		slog.Error("Error getting current manager...", "err", err)
 		return nil, err
 	}
 
-	slog.Info("Checking organization of user...", "user", userToUpdate)
-	if userToUpdate.OrganizationId != nil && *userToUpdate.OrganizationId != *manager.OrganizationId {
-		slog.Error("Conflicting by user's organization...", "organization", *userToUpdate.OrganizationId)
+	slog.Info("Validating employee's organization...", "user", employeeToAttach)
+	if employeeToAttach.OrganizationId != nil && *employeeToAttach.OrganizationId != *manager.OrganizationId {
+		slog.Error("Employee already attached to another organization...", "organization", *employeeToAttach.OrganizationId)
 		return nil, users.EmployeeAlreadyAttached
 	}
 
@@ -45,7 +51,7 @@ func (auuc *AttachUserUseCase) Execute(managerId int, dto users.AttachDTO) (*use
 		ManagerIds: []int{managerId},
 	}
 
-	slog.Info("Checking position by filter...", "filter", positionFilter)
+	slog.Info("Checking if position belongs to current manager by filter...", "filter", positionFilter)
 	_, err = auuc.positionService.GetPosition(positionFilter)
 
 	if err != nil {
@@ -53,15 +59,15 @@ func (auuc *AttachUserUseCase) Execute(managerId int, dto users.AttachDTO) (*use
 		return nil, err
 	}
 
-	slog.Info("Changing organization and position of user by dto...", "dto", dto)
-	userToUpdate.OrganizationId = manager.OrganizationId
-	userToUpdate.PositionId = &dto.PositionId
+	slog.Info("Changing organization and position of employee by dto...", "dto", dto)
+	employeeToAttach.OrganizationId = manager.OrganizationId
+	employeeToAttach.PositionId = &dto.PositionId
 
-	slog.Info("Updating user to attach...", "userToUpdate", userToUpdate)
-	attachedUser, err := auuc.userService.UpdateUser(*userToUpdate)
+	slog.Info("Updating employee to attach...", "employeeToAttach", employeeToAttach)
+	attachedUser, err := auuc.userService.UpdateUser(*employeeToAttach)
 
 	if err != nil {
-		slog.Error("Error updating user to attach...", "err", err)
+		slog.Error("Error updating employee to attach...", "err", err)
 		return nil, err
 	}
 

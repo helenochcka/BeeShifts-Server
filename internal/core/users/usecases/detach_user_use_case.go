@@ -16,34 +16,44 @@ func NewDetachUserUseCase(us services.UserService) DetachUserUseCase {
 
 func (duuc *DetachUserUseCase) Execute(managerId int, dto users.DetachDTO) (*users.Entity, error) {
 	slog.Info("Getting user to detach by id...", "id", dto.Id)
-	userToDetach, err := duuc.userService.GetUser(users.FilterDTO{Ids: []int{dto.Id}})
+	employeeToDetach, err := duuc.userService.GetUser(users.FilterDTO{Ids: []int{dto.Id}})
 
 	if err != nil {
 		slog.Error("Error getting user to detach...", "err", err)
 		return nil, err
 	}
 
+	slog.Info("Validating user's role...", "userRole", employeeToDetach.Role)
+	if employeeToDetach.Role != users.Employee {
+		slog.Error("Insufficient rights to detach user...", "user", employeeToDetach)
+		return nil, users.InsufficientRights
+	}
+
+	slog.Info("Getting current manager by id...", "id", managerId)
 	manager, err := duuc.userService.GetUser(users.FilterDTO{Ids: []int{managerId}})
 
 	if err != nil {
-		slog.Error("Error getting manager to detach...", "err", err)
+		slog.Error("Error getting current manager...", "err", err)
 		return nil, err
 	}
 
-	slog.Info("Checking organization of user...", "user", userToDetach)
-	if userToDetach.OrganizationId == nil || *userToDetach.OrganizationId != *manager.OrganizationId {
-		slog.Error("Conflicting by user's organization...", "organization", *userToDetach.OrganizationId)
+	slog.Info("Validating employee's organization...", "user", employeeToDetach)
+	if employeeToDetach.OrganizationId == nil || *employeeToDetach.OrganizationId != *manager.OrganizationId {
+		slog.Error("employee is not attached to manager's organization...",
+			"employee's organization", *employeeToDetach.OrganizationId,
+			"manager's organization", *manager.OrganizationId)
 		return nil, users.EmployeeNotAttached
 	}
 
-	userToDetach.OrganizationId = nil
-	userToDetach.PositionId = nil
+	slog.Info("Setting employee's organization and position to null...")
+	employeeToDetach.OrganizationId = nil
+	employeeToDetach.PositionId = nil
 
-	slog.Info("Updating user to detach...", "userToDetach", userToDetach)
-	detachedUser, err := duuc.userService.UpdateUser(*userToDetach)
+	slog.Info("Updating employee to detach...", "employeeToDetach", employeeToDetach)
+	detachedUser, err := duuc.userService.UpdateUser(*employeeToDetach)
 
 	if err != nil {
-		slog.Error("Error updating user to detach...", "err", err)
+		slog.Error("Error updating employee to detach...", "err", err)
 		return nil, err
 	}
 

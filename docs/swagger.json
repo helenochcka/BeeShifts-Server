@@ -2,7 +2,8 @@
     "swagger": "2.0",
     "info": {
         "title": "BeeShifts-Server API",
-        "contact": {}
+        "contact": {},
+        "version": "1.0"
     },
     "paths": {
         "/login": {
@@ -317,7 +318,9 @@
                         }
                     }
                 }
-            },
+            }
+        },
+        "/users/attach": {
             "put": {
                 "security": [
                     {
@@ -365,7 +368,7 @@
                 "tags": [
                     "users"
                 ],
-                "summary": "Detach user to organization and reset position",
+                "summary": "Detach user from organization and reset position",
                 "parameters": [
                     {
                         "description": "Data for users detachment JSON",

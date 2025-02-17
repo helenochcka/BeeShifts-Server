@@ -14,15 +14,9 @@ func NewGetPositionsUseCase(ps services.PositionService) GetPositionsUseCase {
 	return GetPositionsUseCase{positionService: ps}
 }
 
-func (gpuc *GetPositionsUseCase) Execute(managerId int, dto positions.GetDTO) ([]positions.Entity, error) {
+func (gpuc *GetPositionsUseCase) Execute(filter positions.FilterDTO) ([]positions.Entity, error) {
 
-	filter := positions.FilterDTO{
-		Ids:        dto.Ids,
-		ManagerIds: []int{managerId},
-		Names:      dto.Names,
-	}
-
-	slog.Info("Getting positions by dto...", "dto", dto)
+	slog.Info("Getting positions by filter...", "filter", filter)
 	positionEntities, err := gpuc.positionService.GetPositions(filter)
 
 	if err != nil {
