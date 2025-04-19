@@ -31,7 +31,13 @@ import (
 // @host      localhost:8000
 func main() {
 
-	cfg := config.LoadYamlConfig("config/config.yaml")
+	cfgPath := os.Getenv("CONFIG_PATH")
+
+	if cfgPath == "" {
+		panic("CONFIG_PATH environment variable not set")
+	}
+
+	cfg := config.LoadYamlConfig(cfgPath)
 	_ = db.ConnectDatabase(cfg.DB.Host, cfg.DB.Port, cfg.DB.UserName, cfg.DB.Password, cfg.DB.DBName)
 	r := gin.Default()
 
@@ -89,5 +95,5 @@ func main() {
 
 	r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	_ = r.Run(cfg.Server.Address + ": " + strconv.Itoa(cfg.Server.Port))
+	_ = r.Run(cfg.Server.Address + ":" + strconv.Itoa(cfg.Server.Port))
 }
